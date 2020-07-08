@@ -1,0 +1,26 @@
+.modal-login {
+    display: flex;
+    flex-direction: column;
+align-items: center;
+
+}
+
+#login-form {
+    max-width: 300px;
+    width: 300px;
+    padding: 0 25px;
+}
+
+#login-form .login-form-forgot {
+    float: right;
+}
+
+#login-form .ant-col-rtl .login-form-forgot {
+    float: left;
+}
+
+.login-form-button {
+    text-align: center;
+    width: 100%;
+    margin: 5px 0;
+}

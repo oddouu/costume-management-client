@@ -4,6 +4,9 @@ import NewProject from "./NewProject";
 import { Link } from "react-router-dom";
 import instance from "../../instance"
 
+import { Layout } from "antd";
+const {Content} = Layout;
+
 class ProjectList extends Component {
   state = {
     projects: [],
@@ -12,9 +15,9 @@ class ProjectList extends Component {
   getAllProjects = () => {
     instance.get("http://localhost:5000/api/projects").then((response) => {
       console.log(response);
-      // this.setState({
-      //   projects: response,
-      // });
+      this.setState({
+        projects: response.data,
+      });
     });
   };
 
@@ -24,9 +27,9 @@ class ProjectList extends Component {
 
   render() {
     return (
-      <div>
-       
-      </div>
+      <Content>
+      
+      </Content>
     );
   }
 }

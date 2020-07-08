@@ -6,8 +6,8 @@ const MenuItemGroup = Menu.ItemGroup;
 class LeftMenu extends Component {
   render() {
     return (
-      <Menu mode={this.props.mode}>
-        <Menu.Item key="mail">
+      <Menu mode={this.props.mode} theme="dark">
+        <Menu.Item key="1">
           <a href="#">Home</a>
         </Menu.Item>
         <SubMenu title={<span>Blogs</span>}>
@@ -20,7 +20,7 @@ class LeftMenu extends Component {
             <Menu.Item key="setting:4">Option 4</Menu.Item>
           </MenuItemGroup>
         </SubMenu>
-        <Menu.Item key="alipay">
+        <Menu.Item key="2">
           <a href="#">Contact Us</a>
         </Menu.Item>
       </Menu>

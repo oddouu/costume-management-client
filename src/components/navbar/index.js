@@ -4,24 +4,26 @@ import AuthService from "../auth/auth-service";
 
 import LeftMenu from "./LeftMenu";
 import RightMenu from "./RightMenu";
-import { Drawer, Button } from "antd";
-import {AlignRightOutlined} from "@ant-design/icons"
-import './NavBar.css';
+import { Layout, Drawer, Button } from "antd";
+import { AlignRightOutlined } from "@ant-design/icons";
+import "./NavBar.css";
+
+const { Header } = Layout;
 
 class NavBar extends Component {
   state = {
-    visible: false
+    visible: false,
   };
 
   showDrawer = () => {
     this.setState({
-      visible: true
+      visible: true,
     });
   };
 
   onClose = () => {
     this.setState({
-      visible: false
+      visible: false,
     });
   };
 
@@ -35,37 +37,37 @@ class NavBar extends Component {
 
   render() {
     return (
-      <nav className="menu">
-        <div className="menu__logo">
-          <a href="">Logo</a>
-        </div>
-        <div className="menu__container">
-          <div className="menu_left">
-            <LeftMenu mode="horizontal" />
+      <Header className="menu">
+          <div className="menu__logo">
+            <a href="">Logo</a>
           </div>
-          <div className="menu_rigth">
-            <RightMenu mode="horizontal" />
+          <div className="menu__container">
+            <div className="menu_left">
+              <LeftMenu mode="horizontal" />
+            </div>
+            <div className="menu_rigth">
+              <RightMenu mode="horizontal" />
+            </div>
+            <Button
+              className="menu__mobile-button"
+              type="primary"
+              onClick={this.showDrawer}
+            >
+              <AlignRightOutlined />
+            </Button>
+            <Drawer
+              title="Basic Drawer"
+              placement="right"
+              className="menu_drawer"
+              closable={false}
+              onClose={this.onClose}
+              visible={this.state.visible}
+            >
+              <LeftMenu mode="inline" />
+              <RightMenu mode="inline" />
+            </Drawer>
           </div>
-          <Button
-            className="menu__mobile-button"
-            type="primary"
-            onClick={this.showDrawer}
-          >
-            <AlignRightOutlined />
-          </Button>
-          <Drawer
-            title="Basic Drawer"
-            placement="right"
-            className="menu_drawer"
-            closable={false}
-            onClose={this.onClose}
-            visible={this.state.visible}
-          >
-            <LeftMenu mode="inline" />
-            <RightMenu mode="inline" />
-          </Drawer>
-        </div>
-      </nav>
+      </Header>
     );
   }
 }
