@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Axios from "axios";
+import instance from "../../instance";
 import { Link } from "react-router-dom";
 import AddTask from "../tasks/AddTask";
 
@@ -12,7 +12,7 @@ class ProjectDetail extends Component {
 
   getProjectDetail = () => {
     const { params } = this.props.match;
-    Axios.get(`http://localhost:5000/api/projects/${params.id}`).then(
+    instance.get(`http://localhost:5000/api/projects/${params.id}`).then(
       (response) => {
         this.setState(response.data);
       }
@@ -21,7 +21,7 @@ class ProjectDetail extends Component {
 
   handleDelete = () => {
     const { params } = this.props.match;
-    Axios.delete(`http://localhost:5000/api/projects/${params.id}`).then(
+    instance.delete(`http://localhost:5000/api/projects/${params.id}`).then(
       (response) => {
         console.log(this.props);
 

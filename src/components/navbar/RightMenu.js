@@ -6,7 +6,7 @@ class RightMenu extends Component {
     return (
       <Menu mode={this.props.mode} theme="dark">
         <Menu.Item key="1">
-          <a href="/login">Log in</a>
+          <a href="/login">Signin</a>
         </Menu.Item>
         <Menu.Item key="2">
           <a href="/signup">Signup</a>

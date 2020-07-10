@@ -12,20 +12,20 @@ import Signup from "./components/auth/Signup";
 
 import AuthService from "./components/auth/auth-service";
 
-import { Layout, Breadcrumb } from "antd";
+import { Layout } from "antd";
 
-const { Footer, Sider, Content } = Layout;
+const { Footer, Content } = Layout;
 
 class App extends Component {
   state = {
-    loggedInUser: null,
+    currentUser: null,
   };
 
   service = new AuthService();
 
   setCurrentUser = (userObj) => {
     this.setState({
-      loggedInUser: userObj,
+      currentUser: userObj,
     });
   };
 
@@ -34,10 +34,10 @@ class App extends Component {
   //2. check if the user is still logged in by calling the backedn
 
   fetchUser = () => {
-    if (this.state.loggedInUser === null) {
+    if (this.state.currentUser === null) {
       this.service.loggedin().then((response) => {
         this.setState({
-          loggedInUser: response,
+          currentUser: response,
         });
       });
     }
@@ -49,7 +49,7 @@ class App extends Component {
       <Layout className="App">
         <NavBar
           setCurrentUser={this.setCurrentUser}
-          getCurrentUser={this.state.loggedInUser}
+          currentUser={this.state.currentUser}
         />
         <Content className="site-layout-content" style={{ padding: '0 50px' }}>
           
@@ -61,24 +61,31 @@ class App extends Component {
                 <Login setCurrentUser={this.setCurrentUser} {...props} />
                 )}
                 />
-            <Route exact path="/projects" component={ProjectList} />
+            <Route exact path="/projects" render={(props) => {
+              if (this.state.currentUser) {
+                return <ProjectList {...props} />;
+              } else {
+                return <Redirect to="/login"/>;
+              }
+            }} />
             <Route
               exact
               path="/projects/:id"
               render={(props) => (
                 <ProjectDetail
-                loggedInUser={this.state.loggedInUser}
+                currentUser={this.state.currentUser}
                 {...props}
                 />
                 )}
                 />
+                
             <Route
               path="/projects/:id/edit"
               render={(props) => {
-                if (this.state.loggedInUser) {
+                if (this.state.currentUser) {
                   return <EditProject {...props} />;
                 } else {
-                  return <Redirect to="/login" />;
+                  return <Login />;
                 }
               }}
               />

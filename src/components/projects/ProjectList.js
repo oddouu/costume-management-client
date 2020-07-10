@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import Axios from "axios";
 import NewProject from "./NewProject";
-import { Link } from "react-router-dom";
-import instance from "../../instance"
+import instance from "../../instance";
 
-import { Layout } from "antd";
-const {Content} = Layout;
+import { Layout, Row, Col } from "antd";
+import ProjectCard from "./ProjectCard";
+
+const { Content } = Layout;
+
 
 class ProjectList extends Component {
   state = {
@@ -13,7 +14,7 @@ class ProjectList extends Component {
   };
 
   getAllProjects = () => {
-    instance.get("http://localhost:5000/api/projects").then((response) => {
+    instance.get("/projects").then((response) => {
       console.log(response);
       this.setState({
         projects: response.data,
@@ -27,9 +28,26 @@ class ProjectList extends Component {
 
   render() {
     return (
-      <Content>
-      
-      </Content>
+      <div >
+        <Content key="new-project-button">
+          <NewProject
+            history={this.props.history}
+            key="new-project"
+            refreshProjects={this.getAllProjects}
+          >
+            Create new project
+          </NewProject>
+        </Content>
+        <Row style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }} >
+          {this.state.projects.map((project) => {
+            return (
+              <Col key={project._id} span={24}>
+                <ProjectCard project={{ ...project }} refreshAllProjects={this.getAllProjects} history={this.props.history}/>
+              </Col>
+            );
+          })}
+        </Row>
+      </div>
     );
   }
 }

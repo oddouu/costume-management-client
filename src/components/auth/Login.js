@@ -1,16 +1,14 @@
 import React, { Component } from "react";
 import AuthService from "./auth-service";
 import "./Login.css";
-import { Modal, Button, Form, Input, Checkbox } from "antd";
-import {
-  UserOutlined,
-  LockOutlined,
-} from "@ant-design/icons";
+import { Modal, Button, Form, Input, Checkbox, message } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
 class Login extends Component {
   state = {
     username: "",
     password: "",
+    submitState: "Log in",
     visible: false,
     loadings: [],
     authenticated: false,
@@ -51,8 +49,18 @@ class Login extends Component {
         };
       });
       if (this.state.authenticated) {
-        this.setState({ username: "", password: "", authenticated: true });
+        this.setState({ username: "", password: "" });
+        message.success({
+          content: "Success!",
+        });
         this.props.history.push("/projects");
+      } else {
+        message.error({
+          content: "Something went wrong, please try again.",
+        });
+        this.setState({
+          submitState: "Log in"
+        })
       }
     }, 2000);
   };
@@ -69,17 +77,21 @@ class Login extends Component {
   handleFormSubmit = (e) => {
     const { username, password } = this.state;
     this.service.login(username, password).then((response) => {
-      // set the whole application with the user that just logged in - lifting up the state by using setCurrentUser function in the parent component
-      if (response) {
+      console.log(response);
+      this.setState({ submitState: "Logging in..." });
+      if (response.status === 200) {
+        // set the whole application with the user that just logged in - lifting up the state by using setCurrentUser function in the parent component
         this.props.setCurrentUser(response);
         this.setState({ authenticated: true });
-      }
+      // } else {
+      //   console.log(response)
+       }
       this.enterLoading(0);
     });
   };
 
   render() {
-    const { visible, confirmLoading, ModalText } = this.state;
+    const { visible, confirmLoading } = this.state;
 
     return (
       <div>
@@ -99,10 +111,10 @@ class Login extends Component {
               loading={this.state.loadings[0]}
               onClick={() => this.handleFormSubmit}
             >
-              Log in
+              {this.state.submitState}
             </Button>,
-            <div className="login-form-button">
-              Or <a href="">register now!</a>
+            <div key="sign-up" className="login-form-button">
+              Or <a href="/signup">register now!</a>
             </div>,
           ]}
         >
@@ -145,7 +157,7 @@ class Login extends Component {
                 <Checkbox>Remember me</Checkbox>
               </Form.Item>
 
-              <a className="login-form-forgot" href="">
+              <a className="login-form-forgot" href="/">
                 Forgot password
               </a>
             </Form.Item>

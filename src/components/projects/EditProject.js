@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Axios from "axios";
+import instance from "../../instance";
 
 class EditProject extends Component {
   state = {
@@ -20,7 +20,7 @@ class EditProject extends Component {
     const { params } = this.props.match;
 
     e.preventDefault();
-    Axios.put(
+    instance.put(
       `http://localhost:5000/api/projects/${params.id}`,
       this.state
     ).then(() => {
