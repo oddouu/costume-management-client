@@ -4,7 +4,6 @@ import "./App.css";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 import ProjectList from "./components/projects/ProjectList";
-import ProjectDetail from "./components/projects/ProjectDetail";
 import EditProject from "./components/projects/EditProject";
 import NavBar from "./components/navbar/index";
 import Login from "./components/auth/Login";
@@ -13,6 +12,8 @@ import Signup from "./components/auth/Signup";
 import AuthService from "./components/auth/auth-service";
 
 import { Layout } from "antd";
+import CharacterList from "./components/characters/CharacterList";
+import SceneList from "./components/scenes/SceneList";
 
 const { Footer, Content } = Layout;
 
@@ -70,9 +71,19 @@ class App extends Component {
             }} />
             <Route
               exact
-              path="/projects/:id"
+              path="/projects/:projId/characters"
               render={(props) => (
-                <ProjectDetail
+                <CharacterList
+                currentUser={this.state.currentUser}
+                {...props}
+                />
+                )}
+                />
+            <Route
+              exact
+              path="/projects/:projId/scenes"
+              render={(props) => (
+                <SceneList
                 currentUser={this.state.currentUser}
                 {...props}
                 />

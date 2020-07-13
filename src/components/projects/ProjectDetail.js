@@ -1,3 +1,4 @@
+
 import React, { Component } from "react";
 import instance from "../../instance";
 import { Link } from "react-router-dom";
@@ -19,20 +20,8 @@ class ProjectDetail extends Component {
     );
   }
 
-  handleDelete = () => {
-    const { params } = this.props.match;
-    instance.delete(`http://localhost:5000/api/projects/${params.id}`).then(
-      (response) => {
-        console.log(this.props);
-
-        this.props.history.push("/projects");
-        //  return <Redirect to='/projects' />
-      }
-    );
-  };
-
   render() {
-    console.log('STATE',this.state)
+    
     const { params } = this.props.match;
 
     return (

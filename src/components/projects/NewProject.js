@@ -1,15 +1,7 @@
 import React, { Component } from "react";
 import instance from "../../instance";
 
-import {
-  Modal,
-  Button,
-  message,
-  Form,
-  DatePicker,
-  InputNumber,
-  Input,
-} from "antd";
+import { Modal, Button, message, Form, Input } from "antd";
 
 class NewProject extends Component {
   state = {
@@ -88,7 +80,7 @@ class NewProject extends Component {
   };
 
   handleFormSubmit = () => {
-    const {
+    let {
       title,
       description,
       movieDirectorName,
@@ -98,6 +90,9 @@ class NewProject extends Component {
       numberOfCharacters,
       numberOfScenes,
     } = this.state;
+
+    numberOfCharacters = Number(numberOfCharacters);
+    numberOfScenes = Number(numberOfScenes);
 
     const newProject = {
       title,

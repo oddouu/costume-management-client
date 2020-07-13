@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import NewProject from "./NewProject";
 import instance from "../../instance";
 
-import { Layout, Row, Col } from "antd";
+import { Layout, List } from "antd";
 import ProjectCard from "./ProjectCard";
 
 const { Content } = Layout;
@@ -38,15 +38,35 @@ class ProjectList extends Component {
             Create new project
           </NewProject>
         </Content>
-        <Row style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }} >
+        <List
+          grid={{
+            gutter: 16,
+            xs: 1,
+            sm: 2,
+            md: 2,
+            lg:3,
+            xl: 3,
+            xxl: 3,
+          }}
+          dataSource={this.state.projects}
+          renderItem={project => (
+            <List.Item>
+              <ProjectCard key={project._id + "Card"} project={{ ...project }} refreshProjects={this.getAllProjects} history={this.props.history} />
+            </List.Item>
+          )}
+        />
+
+
+
+        {/* <Row style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }} >
           {this.state.projects.map((project) => {
             return (
               <Col key={project._id} span={24}>
-                <ProjectCard project={{ ...project }} refreshAllProjects={this.getAllProjects} history={this.props.history}/>
+                <ProjectCard key={project._id+"Card"} project={{ ...project }} refreshProjects={this.getAllProjects} history={this.props.history}/>
               </Col>
             );
           })}
-        </Row>
+        </Row> */}
       </div>
     );
   }

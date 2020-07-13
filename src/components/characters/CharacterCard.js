@@ -19,37 +19,60 @@ import {
   EllipsisOutlined,
 } from "@ant-design/icons";
 
-class ProjectCard extends Component {
+class CharacterCard extends Component {
   state = {
-    title: "",
-    date: "",
-    description: "",
-    movieDirectorName: "",
-    scriptWriter: "",
-    productionName: "",
-    numberOfCharacters: "",
-    numberOfScenes: "",
+    characterName: "",
+    actorName: "",
+    age: "",
+    imageUrl: "",
+    numberOfCostumes: 0,
+    project: "",
     _id: "",
     disabledInput: true,
     visiblePopConfirm: false,
     editIconColor: "rgba(0, 0, 0, 0.45)",
   };
 
-  componentDidMount() {
-    this.props.project &&
+  getCharacterInfo = () => {
+    const projId = this.props.character.project;
+    const charId = this.props.character._id;
+
+    instance.get(`/projects/${projId}/${charId}`).then((response) => {
+      const {
+        characterName,
+        actorName,
+        age,
+        imageUrl,
+        numberOfCostumes,
+        project,
+        _id,
+      } = response.data;
+
       this.setState({
-        title: this.props.project.title,
-        description: this.props.project.description,
-        date: this.props.project.date,
-        movieDirectorName: this.props.project.movieDirectorName,
-        scriptWriter: this.props.project.scriptWriter,
-        productionName: this.props.project.productionName,
-        numberOfCharacters: this.props.project.numberOfCharacters,
-        numberOfScenes: this.props.project.numberOfScenes,
-        _id: this.props.project._id,
+        characterName,
+        actorName,
+        age,
+        imageUrl,
+        numberOfCostumes,
+        project,
+        _id,
+      });
+    });
+  };
+
+  componentDidMount() {
+    this.props.character &&
+      this.setState({
+        characterName: this.props.character.characterName,
+        actorName: this.props.character.actorName,
+        age: this.props.character.age,
+        imageUrl: this.props.character.imageUrl,
+        numberOfCostumes: this.props.character.numberOfCostumes,
+        project: this.props.character.project,
+        _id: this.props.character._id,
       });
 
-    console.log("PROJECT", this.props.project);
+    console.log("CHARACTER", this.props.character);
   }
 
   handleChange = (e) => {
@@ -85,31 +108,22 @@ class ProjectCard extends Component {
   };
 
   handleEditSubmit = () => {
-    const {
-      _id,
-      title,
-      description,
-      date,
-      movieDirectorName,
-      scriptWriter,
-      productionName,
-    } = this.state;
+    const { _id, characterName, actorName, age, project } = this.state;
+
+    console.log("PUT REQ", `/projects/${project}/characters/${_id}`);
     instance
-      .put(`/projects/${_id}`, {
-        title,
-        description,
-        date,
-        movieDirectorName,
-        scriptWriter,
-        productionName,
+      .put(`/projects/${project}/characters/${_id}`, {
+        characterName,
+        actorName,
+        age,
       })
       .then((response) => {
-        console.log(response);
+        console.log("EDIT RESPONSE", response);
         message.success({
-          content: "project information updated",
+          content: "character information updated",
         });
         // lift the state
-        this.props.refreshProjects();
+        this.props.refreshCharacters();
         this.setState({
           disabledInput: !this.state.disabledInput,
         });
@@ -125,17 +139,17 @@ class ProjectCard extends Component {
   };
 
   handleDeleteSubmit = () => {
-    const { _id } = this.state;
+    const { _id, project } = this.state;
 
     instance
-      .delete(`/projects/${_id}`)
+      .delete(`/projects/${project}/characters/${_id}`)
       .then((response) => {
         console.log(response);
         message.success({
-          content: "project deleted successfully",
+          content: "character deleted successfully",
         });
         // lift the state
-        this.props.refreshProjects();
+        this.props.refreshCharacters();
       })
       .catch((err) => {
         if (err.response.status === 403) {
@@ -149,14 +163,12 @@ class ProjectCard extends Component {
 
   render() {
     const {
-      title,
-      description,
-      date,
-      movieDirectorName,
-      scriptWriter,
-      productionName,
-      numberOfScenes,
-      numberOfCharacters,
+      project,
+      actorName,
+      characterName,
+      age,
+      numberOfCostumes,
+      imageUrl,
       _id,
       disabledInput,
       visiblePopConfirm,
@@ -164,20 +176,12 @@ class ProjectCard extends Component {
     const menu = (
       <Menu>
         <Menu.Item>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={`/projects/${_id}`}
-          >
-            Go to characters
+          <a target="_blank" rel="noopener noreferrer" href={`/projects/`}>
+            Go to costumes
           </a>
         </Menu.Item>
         <Menu.Item>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={`/projects/${_id}`}
-          >
+          <a target="_blank" rel="noopener noreferrer" href={`/projects/`}>
             Go to scenes
           </a>
         </Menu.Item>
@@ -221,9 +225,9 @@ class ProjectCard extends Component {
               <EditOutlined key="edit" onClick={this.enableEdit} />
             </Tooltip>,
 
-            <Tooltip title="delete project">
+            <Tooltip title="delete character">
               <Popconfirm
-                title="Are you really sure you want to delete this project?"
+                title="Are you really sure you want to delete this character?"
                 onConfirm={this.handleDeleteSubmit}
                 okText="Yes"
                 cancelText="No"
@@ -254,59 +258,34 @@ class ProjectCard extends Component {
           ]}
         >
           <Form>
-            <Form.Item label="Title">
+            <Form.Item label="actorName">
               <Input
-                value={title}
-                name="title"
+                value={actorName}
+                name="actorName"
                 onChange={this.handleChange}
                 disabled={disabledInput}
               />
             </Form.Item>
-            <Form.Item label="Description">
+            <Form.Item label="characterName">
               <Input
-                value={description}
-                name="description"
+                value={characterName}
+                name="characterName"
                 onChange={this.handleChange}
                 disabled={disabledInput}
               />
             </Form.Item>
-            <Form.Item label="Director">
+            <Form.Item label="Age">
               <Input
-                value={movieDirectorName}
-                name="movieDirectorName"
+                value={age}
+                name="age"
                 onChange={this.handleChange}
                 disabled={disabledInput}
               />
             </Form.Item>
-            <Form.Item label="Writer">
-              <Input
-                value={scriptWriter}
-                name="scriptWriter"
-                onChange={this.handleChange}
-                disabled={disabledInput}
-              />
+
+            <Form.Item label="Number of Costumes">
+              <span>{numberOfCostumes}</span>
             </Form.Item>
-            <Form.Item label="Date">
-              <Input
-                type="date"
-                value={date}
-                name="date"
-                onChange={this.handleChange}
-                disabled={disabledInput}
-              />
-            </Form.Item>
-            <Form.Item label="Production">
-              <Input
-                value={productionName}
-                name="productionName"
-                onChange={this.handleChange}
-                disabled={disabledInput}
-              />
-            </Form.Item>
-            <Form.Item label="Number of Characters">
-              <span>{numberOfCharacters}</span>
-            </Form.Item>
-            <Form.Item label="Number of Scenes">{numberOfScenes}</Form.Item>
           </Form>
         </Card>
       </div>
@@ -314,4 +293,4 @@ class ProjectCard extends Component {
   }
 }
 
-export default ProjectCard;
+export default CharacterCard;
