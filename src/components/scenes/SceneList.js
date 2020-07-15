@@ -1,4 +1,10 @@
-import React, { useContext, useState, useEffect, useRef, Component } from "react";
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  Component,
+} from "react";
 import NewScene from "./NewScene";
 import instance from "../../instance";
 
@@ -15,9 +21,6 @@ import {
   Form,
   Button,
 } from "antd";
-
-const { Content } = Layout;
-
 
 const EditableContext = React.createContext();
 
@@ -101,83 +104,117 @@ const EditableCell = ({
   return <td {...restProps}>{childNode}</td>;
 };
 
-
 class SceneList extends Component {
-  state = {
-  };
+  state = {};
 
   columns = [
     {
-      title: 'sceneNumber',
-      dataIndex: 'sceneNumber',
-      width: "30%",
+      title: "sceneNumber",
+      dataIndex: "sceneNumber",
       editable: true,
     },
     {
-      title: 'timeOfDay',
-      dataIndex: 'timeOfDay',
-      width: "30%",
+      title: "storyDayNumber",
+      dataIndex: "storyDayNumber",
+      editable: true,
+    },
+    {
+      title: "timeOfDay",
+      dataIndex: "timeOfDay",
+      editable: true,
+    },
+    {
+      title: "intExt",
+      dataIndex: "intExt",
+      editable: true,
+    },
+    {
+      title: "description",
+      dataIndex: "description",
+      editable: true,
+    },
+    {
+      title: "season",
+      dataIndex: "season",
       editable: true,
     },
 
     {
-      title: 'operation',
-      dataIndex: 'operation',
+      title: "operation",
+      dataIndex: "operation",
       render: (text, record) =>
-      this.state.scenes.length >= 1 ? (
-        <Popconfirm title="sure?" onConfirm={() => this.handleDelete(record.key)}>
-          <a>Delete</a>
-        </Popconfirm>
-      ) : null,
+        this.state.scenes.length >= 1 ? (
+          <div>
+            <Popconfirm
+              title="sure?"
+              onConfirm={() => this.handleDelete(record)}
+            >
+              <Button>Delete</Button>
+            </Popconfirm>
+          </div>
+        ) : null,
     },
   ];
 
   getAllScenes = () => {
     const { params } = this.props.match;
-    console.log("PARAMS", params.projId);
     instance.get(`/projects/${params.projId}/scenes`).then((response) => {
-      console.log("ALL SCENES", response);
-
-      for (let i = 0; i < response.data.length; i++) {
-        response.data[i].key = i;
+      if (response.data.length) {
+        for (let i = 0; i < response.data.length; i++) {
+          response.data[i].key = i;
+        }
+      } else {
+        response.data.length = 0;
       }
       this.setState({
         scenes: response.data,
-        count: response.data.length - 1
+        count: response.data.length,
       });
     });
   };
 
-  handleDelete = key => {
-    const scenes = [...this.state.scenes];
-    this.setState({
-      scenes: scenes.filter(item => item.key !== key),
-    })
-  }
+  handleDelete = (scene) => {
+    instance
+      .delete(`/projects/${scene.project}/scenes/${scene._id}`)
+      .then((deletedScene) => {
+        console.log("DELETED SCENE: ", deletedScene);
+        this.getAllScenes();
+      });
+  };
 
   handleAdd = () => {
-    const {count,scenes} = this.state;
+    const { count, scenes } = this.state;
+    let sceneNumber;
+    if (count) {
+      sceneNumber = parseInt(scenes[count - 1].sceneNumber) + 1;
+    } else {
+      sceneNumber = 1;
+    }
+    // console.log("COUNT",parseInt(scenes[count-1].sceneNumber))
     const newData = {
       key: count,
-      name: `Edward King ${count}`,
-      age: 32,
-      address: `London, Park Lane no. ${count}`
+      sceneNumber,
     };
-    this.setState({
-      scenes: [...scenes, newData],
-      count: count +1
-    })
-  }
+   
+     const { params } = this.props.match;
+    instance
+      .post(`/projects/${params.projId}/scenes`, newData)
+      .then((newScene) => {
+        console.log("CREATED SCENE: ", newScene);
+        this.getAllScenes();
+      })
 
-  handleSave = row => {
-    const newData = [...this.state.scenes];
-    const index = newData.findIndex(item => row.key === item.key);
-    const item = newData[index];
-    newData.splice(index, 1, {...item, ...row});
-    this.setState({
-      scenes: newData
-    })
-  }
+  };
+
+  handleSave = (editedScene) => {
+
+    instance
+      .put(`projects/${editedScene.project}/scenes/${editedScene._id}`, editedScene)
+      .then(response => {
+        console.log("EDITED SCENE: ", response)
+        this.getAllScenes();
+      })
+  };
 
   componentDidMount() {
     if (this.props.currentUser) {
@@ -185,24 +222,22 @@ class SceneList extends Component {
     }
   }
 
- 
-
   render() {
     const { params } = this.props.match;
-    const {scenes} = this.state;
+    const { scenes } = this.state;
     const components = {
       body: {
         row: EditableRow,
-        cell: EditableCell
-      }
+        cell: EditableCell,
+      },
     };
-    const columns = this.columns.map(col => {
-      if(!col.editable) {
+    const columns = this.columns.map((col) => {
+      if (!col.editable) {
         return col;
       }
       return {
         ...col,
-        onCell: record => ({
+        onCell: (record) => ({
           record,
           editable: col.editable,
           dataIndex: col.dataIndex,
@@ -213,41 +248,21 @@ class SceneList extends Component {
     });
     return (
       <div>
-       <Button
-       onClick={this.handleAdd}
-       type="primary"
-       style={{marginBottom: 16,}}
-       >
-         Add a row
-       </Button>
+        <Button
+          onClick={this.handleAdd}
+          type="primary"
+          style={{ marginBottom: 16 }}
+        >
+          Add a row
+        </Button>
 
-       <Table
-        components={components}
-        rowClassName={()=>'editable-row'}
-        bordered
-        dataSource={scenes}
-        columns={columns}
+        <Table
+          components={components}
+          rowClassName={() => "editable-row"}
+          bordered
+          dataSource={scenes}
+          columns={columns}
         />
-        {/* <Content key="new-scene-button">
-          <NewScene
-            history={this.props.history}
-            key="new-scene"
-            refreshScenes={this.getAllScenes}
-            projId={params.projId}
-          />
-        </Content>
-        <List
-          itemLayout="horizontal"
-          dataSource={this.state.scenes}
-          renderItem={(item) => (
-            <List.Item actions={[<a key="list-loadmore-edit">edit</a>]}>
-              <Skeleton avatar title={false} loading={item.loading} active>
-                <List.Item.Meta title={item.sceneNumber} />
-                <div>content</div>
-              </Skeleton>
-            </List.Item>
-          )}
-        /> */}
       </div>
     );
   }

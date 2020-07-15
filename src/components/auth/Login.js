@@ -53,7 +53,7 @@ class Login extends Component {
         message.success({
           content: "Success!",
         });
-        this.props.history.push("/projects/5f09d2f4d47c1500176d58e8/scenes");
+        this.props.history.push("/projects/5f0f5734d6edc5774946e9e3/scenes");
       } else {
         message.error({
           content: "Something went wrong, please try again.",
@@ -62,7 +62,7 @@ class Login extends Component {
           submitState: "Log in"
         })
       }
-    }, 2000);
+    }, 2);
   };
 
   service = new AuthService();

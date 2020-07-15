@@ -19,6 +19,8 @@ import {
   EllipsisOutlined,
 } from "@ant-design/icons";
 
+import { Link } from "react-router-dom";
+
 class ProjectCard extends Component {
   state = {
     title: "",
@@ -164,22 +166,10 @@ class ProjectCard extends Component {
     const menu = (
       <Menu>
         <Menu.Item>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={`/projects/${_id}`}
-          >
-            Go to characters
-          </a>
+          <Link to={`/projects/${_id}/characters`}>Go to characters</Link>
         </Menu.Item>
         <Menu.Item>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={`/projects/${_id}`}
-          >
-            Go to scenes
-          </a>
+          <Link to={`/projects/${_id}/scenes`}>Go to scenes</Link>
         </Menu.Item>
       </Menu>
     );
@@ -189,25 +179,15 @@ class ProjectCard extends Component {
           hoverable
           style={{ width: 300, margin: 30 }}
           cover={
-            <a
-              href={`/projects/${_id}`}
+            <img
               style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
+                marginRight: "auto",
+                marginLeft: "auto",
+                objectFit: "cover",
               }}
-            >
-              <img
-                style={{
-                  marginRight: "auto",
-                  marginLeft: "auto",
-                  objectFit: "cover",
-                }}
-                alt="example"
-                src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-              />
-            </a>
+              alt="example"
+              src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+            />
           }
           actions={[
             <Dropdown overlay={menu} placement="bottomCenter">
