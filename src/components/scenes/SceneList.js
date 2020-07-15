@@ -20,8 +20,10 @@ import {
   Popconfirm,
   Form,
   Button,
+  Select
 } from "antd";
 
+const { Option } = Select;
 const EditableContext = React.createContext();
 
 const EditableRow = ({ index, ...props }) => {
@@ -40,6 +42,7 @@ const EditableCell = ({
   editable,
   children,
   dataIndex,
+  type,
   record,
   handleSave,
   ...restProps
@@ -79,14 +82,88 @@ const EditableCell = ({
           margin: 0,
         }}
         name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title} is required.`,
-          },
-        ]}
       >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+        <Input type={type} ref={inputRef} onPressEnter={save} onBlur={save} />
+      </Form.Item>
+    ) : (
+      <div
+        className="editable-cell-value-wrap"
+        style={{
+          paddingRight: 24,
+        }}
+        onClick={toggleEdit}
+      >
+        {children}
+      </div>
+    );
+  }
+
+  if (editable && dataIndex === "intExt") {
+    childNode = editing ? (
+      <Form.Item
+        style={{
+          margin: 0,
+        }}
+        name={dataIndex}
+      >
+        <Select ref={inputRef} onSelect={save} onBlur={save}>
+          <Option value="INT">INT</Option>
+          <Option value="EXT">EXT</Option>
+        </Select>
+      </Form.Item>
+    ) : (
+      <div
+        className="editable-cell-value-wrap"
+        style={{
+          paddingRight: 24,
+        }}
+        onClick={toggleEdit}
+      >
+        {children}
+      </div>
+    );
+  }
+
+  if (editable && dataIndex === "timeOfDay") {
+    childNode = editing ? (
+      <Form.Item
+        style={{
+          margin: 0,
+        }}
+        name={dataIndex}
+      >
+        <Select ref={inputRef} onSelect={save} onBlur={save}>
+          <Option value="DAY">DAY</Option>
+          <Option value="NIGHT">NIGHT</Option>
+        </Select>
+      </Form.Item>
+    ) : (
+      <div
+        className="editable-cell-value-wrap"
+        style={{
+          paddingRight: 24,
+        }}
+        onClick={toggleEdit}
+      >
+        {children}
+      </div>
+    );
+  }
+  if (editable && dataIndex === "season") {
+    childNode = editing ? (
+      <Form.Item
+        style={{
+          margin: 0,
+        }}
+        name={dataIndex}
+      >
+        <Select ref={inputRef} onSelect={save} onBlur={save}>
+          <Option value="Spring">Spring</Option>
+          <Option value="Summer">Summer</Option>
+          <Option value="Autumn">Autumn</Option>
+          <Option value="Winter">Winter</Option>
+          <Option value="N/A">N/A</Option>
+        </Select>
       </Form.Item>
     ) : (
       <div
@@ -117,6 +194,7 @@ class SceneList extends Component {
       title: "storyDayNumber",
       dataIndex: "storyDayNumber",
       editable: true,
+      type: "number"
     },
     {
       title: "timeOfDay",
@@ -132,6 +210,7 @@ class SceneList extends Component {
       title: "description",
       dataIndex: "description",
       editable: true,
+      type: "textarea"
     },
     {
       title: "season",
@@ -241,6 +320,7 @@ class SceneList extends Component {
           record,
           editable: col.editable,
           dataIndex: col.dataIndex,
+          type: col.type,
           title: col.title,
           handleSave: this.handleSave,
         }),
