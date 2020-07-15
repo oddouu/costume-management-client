@@ -284,7 +284,13 @@ class CharacterCard extends Component {
             </Form.Item>
 
             <Form.Item label="Number of Costumes">
-              <span>{numberOfCostumes}</span>
+              <Input
+                value={numberOfCostumes}
+                name="numberOfCostumes"
+                type="number"
+                onChange={this.handleChange}
+                disabled={disabledInput}
+              />
             </Form.Item>
           </Form>
         </Card>

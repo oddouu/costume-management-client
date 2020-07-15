@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import NewCharacter from "./NewCharacter";
 import instance from "../../instance";
-
-import { Layout, List } from "antd";
+import { Link } from "react-router-dom";
+import { Layout, List, Button } from "antd";
 import CharacterCard from "./CharacterCard";
 
 const { Content } = Layout;
@@ -11,10 +11,10 @@ class CharacterList extends Component {
   state = {};
 
   getAllCharacters = () => {
-      const { params } = this.props.match;
-      console.log("PARAMS", params.projId)
-      instance.get(`/projects/${params.projId}/characters`).then((response) => {
-      console.log("ALL CHARACTERS",response);
+    const { params } = this.props.match;
+    console.log("PARAMS", params.projId);
+    instance.get(`/projects/${params.projId}/characters`).then((response) => {
+      console.log("ALL CHARACTERS", response);
       this.setState({
         characters: response.data,
       });
@@ -26,7 +26,7 @@ class CharacterList extends Component {
   }
 
   render() {
-      const {params} = this.props.match;
+    const { params } = this.props.match;
     return (
       <div>
         <Content key="new-character-button">
@@ -38,6 +38,9 @@ class CharacterList extends Component {
           >
             Create new Character
           </NewCharacter>
+          <Link to="/projects">
+            <Button>Go back to projects</Button>
+          </Link>
         </Content>
         <List
           grid={{

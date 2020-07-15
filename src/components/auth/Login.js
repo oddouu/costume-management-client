@@ -53,7 +53,7 @@ class Login extends Component {
         message.success({
           content: "Success!",
         });
-        this.props.history.push("/projects/5f0f5734d6edc5774946e9e3/scenes");
+        this.props.history.push("/projects/");
       } else {
         message.error({
           content: "Something went wrong, please try again.",

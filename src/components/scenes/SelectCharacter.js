@@ -1,75 +1,84 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import { Select, Spin } from "antd";
 import debounce from "lodash/debounce";
 import instance from "../../instance";
+import SceneList from "./SceneList";
 
 const { Option } = Select;
 
 // NEED TO GET ALL CHARACTERS CONNECTED TO A SPECIFIC SCENE
 // NEED TO PUSH A CHARACTER INTO A SPECIFIC SCENE
 
-class SelectCharacter extends Component {
 
-  constructor(props) {
-    super(props);
-    this.lastFetchId = 0;
-    this.fetchUser = debounce(this.fetchUser, 800);
-  }
+class SelectCharacter extends React.Component {
   state = {
-    data: [],
-    value: [],
-    fetching: false,
+    selectedItems: this.props.scene.characters,
+    options: []
   };
 
-  fetchUser = value => {
-    console.log('fetching user', value);
-    this.lastFetchId += 1;
-    const fetchId = this.lastFetchId;
-    this.setState({ data: [], fetching: true });
-    fetch('https://randomuser.me/api/?results=5')
-      .then(response => response.json())
-      .then(body => {
-        if (fetchId !== this.lastFetchId) {
-          // for fetch callback order
-          return;
-        }
-        const data = body.results.map(user => ({
-          text: `${user.name.first} ${user.name.last}`,
-          value: user.login.username,
-        }));
-        this.setState({ data, fetching: false });
-      });
-  };
+  componentDidMount() {
+    this.getAllCharacters()
+  }
 
-  handleChange = value => {
+  handleChange = (selectedItems) => {
+    console.log(selectedItems)
+    const { scene } = this.props;
+    const { project, _id } = scene;
     this.setState({
-      value,
-      data: [],
-      fetching: false,
+      selectedItems,
     });
+
+    instance
+      .put(`/projects/${project}/scenes/${_id}/addCharacters`, {
+        characters: selectedItems
+      })
+      .then(response => {
+        console.log("ADDED/REMOVED CHARACTERS: ", response);
+        this.props.refreshScenes();
+      })
+    console.log("selected items", selectedItems);
   };
+
+  getAllCharacters = () => {
+    const { scene } = this.props;
+    const { project, _id, characters } = scene;
+    instance
+      .get(`/projects/${project}/characters`)
+      .then(response=>{
+      console.log("OPTIONS: ", this.props.characters)
+      console.log("SELECTED: ", this.props.scene.characters)
+
+      response.data.map(item=>item._id)
+        this.setState({
+          options: response.data,
+          selectedItems: this.props.scene.characters
+        }) 
+      })
+  }
 
   render() {
-    const { fetching, data, value } = this.state;
+    const { selectedItems } = this.state;
+    const filteredOptions = this.state.options.filter((o) => !selectedItems.includes(o));
+    // console.log("CHARACTERS: ", this.props.scene)
     return (
       <Select
         mode="multiple"
-        labelInValue
-        value={value}
-        placeholder="Select users"
-        notFoundContent={fetching ? <Spin size="small" /> : null}
-        filterOption={false}
-        onSearch={this.fetchUser}
+        placeholder="Inserted are removed"
+        value={selectedItems}
         onChange={this.handleChange}
-        style={{ width: '100%' }}
+        style={{
+          width: "100%",
+        }}
+        name="characters"
       >
-        {data.map(d => (
-          <Option key={d.value}>{d.text}</Option>
+        {filteredOptions.map((item) => (
+          <Select.Option key={item._id} value={item._id}>
+            {item.actorName} {item.characterName}
+          </Select.Option>
         ))}
       </Select>
     );
   }
-
 }
 
 export default SelectCharacter;

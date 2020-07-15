@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import NewScene from "./NewScene";
 import instance from "../../instance";
-
+import {Link} from "react-router-dom";
 import "./SceneList.css";
 
 import {
@@ -22,6 +22,8 @@ import {
   Button,
   Select
 } from "antd";
+
+import SelectCharacter from "./SelectCharacter";
 
 const { Option } = Select;
 const EditableContext = React.createContext();
@@ -182,7 +184,7 @@ const EditableCell = ({
 };
 
 class SceneList extends Component {
-  state = {};
+  state = {characters: []};
 
   columns = [
     {
@@ -194,7 +196,7 @@ class SceneList extends Component {
       title: "storyDayNumber",
       dataIndex: "storyDayNumber",
       editable: true,
-      type: "number"
+      type: "number",
     },
     {
       title: "timeOfDay",
@@ -210,14 +212,13 @@ class SceneList extends Component {
       title: "description",
       dataIndex: "description",
       editable: true,
-      type: "textarea"
     },
     {
       title: "season",
       dataIndex: "season",
       editable: true,
     },
-
+   
     {
       title: "operation",
       dataIndex: "operation",
@@ -230,6 +231,7 @@ class SceneList extends Component {
             >
               <Button>Delete</Button>
             </Popconfirm>
+            <SelectCharacter scene={record} characters={this.state.characters} refreshScenes={this.getAllScenes}/>
           </div>
         ) : null,
     },
@@ -245,11 +247,21 @@ class SceneList extends Component {
       } else {
         response.data.length = 0;
       }
+
       this.setState({
         scenes: response.data,
         count: response.data.length,
       });
-    });
+    })
+    .then(()=>{
+      instance
+        .get(`/projects/${params.projId}/characters`)
+        .then(response => {
+          this.setState({
+            characters: response.data
+          })
+        })
+    })
   };
 
   handleDelete = (scene) => {
@@ -274,25 +286,26 @@ class SceneList extends Component {
       key: count,
       sceneNumber,
     };
-   
-     const { params } = this.props.match;
+
+    const { params } = this.props.match;
     instance
       .post(`/projects/${params.projId}/scenes`, newData)
       .then((newScene) => {
         console.log("CREATED SCENE: ", newScene);
         this.getAllScenes();
-      })
-
+      });
   };
 
   handleSave = (editedScene) => {
-
     instance
-      .put(`projects/${editedScene.project}/scenes/${editedScene._id}`, editedScene)
-      .then(response => {
-        console.log("EDITED SCENE: ", response)
+      .put(
+        `projects/${editedScene.project}/scenes/${editedScene._id}`,
+        editedScene
+      )
+      .then((response) => {
+        console.log("EDITED SCENE: ", response);
         this.getAllScenes();
-      })
+      });
   };
 
   componentDidMount() {
@@ -335,6 +348,11 @@ class SceneList extends Component {
         >
           Add a row
         </Button>
+        <Link to="/projects">
+        <Button>
+Go back to projects
+        </Button>
+        </Link>
 
         <Table
           components={components}
