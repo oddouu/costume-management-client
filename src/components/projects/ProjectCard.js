@@ -177,7 +177,7 @@ class ProjectCard extends Component {
       <div>
         <Card
           hoverable
-          style={{ width: 300, margin: 30 }}
+          style={{ width: 300 }}
           cover={
             <img
               style={{

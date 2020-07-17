@@ -19,6 +19,8 @@ import {
   EllipsisOutlined,
 } from "@ant-design/icons";
 
+import {Link} from "react-router-dom";
+
 class CharacterCard extends Component {
   state = {
     characterName: "",
@@ -37,7 +39,7 @@ class CharacterCard extends Component {
     const projId = this.props.character.project;
     const charId = this.props.character._id;
 
-    instance.get(`/projects/${projId}/${charId}`).then((response) => {
+    instance.get(`/projects/${projId}/characters/${charId}`).then((response) => {
       const {
         characterName,
         actorName,
@@ -176,14 +178,14 @@ class CharacterCard extends Component {
     const menu = (
       <Menu>
         <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href={`/projects/`}>
+          <Link to={`/projects/${project}/characters/${_id}/costumes`}>
             Go to costumes
-          </a>
+          </Link>
         </Menu.Item>
         <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href={`/projects/`}>
+          <Link to={`/projects/${project}/scenes`}>
             Go to scenes
-          </a>
+          </Link>
         </Menu.Item>
       </Menu>
     );

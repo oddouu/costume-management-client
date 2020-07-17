@@ -15,6 +15,9 @@ import { Layout } from "antd";
 import CharacterList from "./components/characters/CharacterList";
 import SceneList from "./components/scenes/SceneList";
 
+import CostumeList from "./components/costumes/CostumeList";
+import CostumeDetail from "./components/costumes/CostumeDetail"
+
 const { Footer, Content } = Layout;
 
 class App extends Component {
@@ -89,18 +92,28 @@ class App extends Component {
                 />
                 )}
                 />
-                
             <Route
-              path="/projects/:id/edit"
-              render={(props) => {
-                if (this.state.currentUser) {
-                  return <EditProject {...props} />;
-                } else {
-                  return <Login />;
-                }
-              }}
-              />
+              exact
+              path="/projects/:projId/characters/:charId/costumes"
+              render={(props) => (
+                <CostumeList
+                currentUser={this.state.currentUser}
+                {...props}
+                />
+                )}
+                />
 
+            <Route
+              exact
+              path="/projects/:projId/characters/:charId/costumes/:costId"
+              render={(props) => (
+                <CostumeDetail
+                currentUser={this.state.currentUser}
+                {...props}
+                />
+                )}
+                />
+              
             <Route
               path="/signup"
               render={(props) => (
