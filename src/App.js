@@ -4,7 +4,6 @@ import "./App.css";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 import ProjectList from "./components/projects/ProjectList";
-import EditProject from "./components/projects/EditProject";
 import NavBar from "./components/navbar/index";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
@@ -32,6 +31,11 @@ class App extends Component {
       currentUser: userObj,
     });
   };
+
+  componentDidMount() {
+    this.fetchUser();
+  }
+
 
   // 1. save the user into the browser local storage
 
@@ -62,6 +66,8 @@ class App extends Component {
         <Content className="site-layout-content" style={{ padding: "0 50px" }}>
           <Switch>
             {/* Passing props using render method inside the Route component */}
+            
+            
             <Route
               path="/login"
               render={(props) => (
