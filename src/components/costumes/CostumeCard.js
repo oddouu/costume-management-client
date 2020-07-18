@@ -8,7 +8,8 @@ import {
   Menu,
   Dropdown,
   Tooltip,
-  Descriptions
+  Descriptions,
+  Select,
 } from "antd";
 
 import instance from "../../instance";
@@ -21,6 +22,7 @@ import {
 } from "@ant-design/icons";
 
 import { Link } from "react-router-dom";
+import SelectScene from "./SelectScene";
 
 class CostumeCard extends Component {
   state = {
@@ -28,19 +30,51 @@ class CostumeCard extends Component {
     description: "",
     imageUrl: "",
     character: "",
+    scenes: [],
     project: "",
     _id: "",
-    key: 'info'
+    allScenes: [],
+    key: "info",
+    disabledInput: true,
+    visiblePopConfirm: false,
+    editIconColor: "rgba(0, 0, 0, 0.45)",
   };
 
   onTabChange = (key, type) => {
-    console.log(key,type);
+    console.log(key, type);
     this.setState({
-      [type]: key
+      [type]: key,
+    });
+  };
+
+  enableEdit = () => {
+    if (!this.state.disabledInput) {
+      this.setState({
+        disabledInput: !this.state.disabledInput,
+        editIconColor: "rgba(0, 0, 0, 0.45)",
+      });
+    } else {
+      this.setState({
+        disabledInput: !this.state.disabledInput,
+        editIconColor: "#1890ff",
+      });
+    }
+  };
+
+  getAllScenes = () => {
+    const projId = this.props.projId;
+
+    instance.get(`/projects/${projId}/scenes`).then((response) => {
+      console.log("ALL SCENES", response.data);
+      this.setState({
+        allScenes: response.data,
+      });
     });
   };
 
   getCostumeInfo = () => {
+    this.getAllScenes();
+
     const projId = this.props.projId;
     const charId = this.props.charId;
     const costId = this.props.costume._id;
@@ -54,23 +88,27 @@ class CostumeCard extends Component {
           imageUrl,
           character,
           project,
+          scenes,
           _id,
         } = response.data;
 
-        console.log(response.data);
+        console.log("COSTUME INFO", response.data);
         this.setState({
           costumeNumber,
           description,
           imageUrl,
           character,
           project,
+          scenes,
           _id,
         });
+
+        // GET ALL SCENES OF THE PROJECT AS WELL
       });
   };
 
   componentDidMount() {
-    this.props.costume && this.getCostumeInfo();
+    this.getCostumeInfo();
   }
 
   handleDeleteSubmit = () => {
@@ -96,23 +134,83 @@ class CostumeCard extends Component {
       });
   };
 
+  handleChange = (e) => {
+    const { name, value } = e.target;
+    this.setState({
+      [name]: value,
+    });
+  };
+
+  handleVisibleChange = (visiblePopConfirm) => {
+    if (!visiblePopConfirm) {
+      this.setState({ visiblePopConfirm });
+      return;
+    }
+    // Determining condition before show the popconfirm.
+    if (!this.state.disabledInput) {
+      this.setState({ visiblePopConfirm }); // show the popconfirm
+    }
+  };
+
+  handleEditSubmit = () => {
+    const { _id, character, costumeNumber, description, project } = this.state;
+
+    instance
+      .put(`/projects/${project}/characters/${character}/costumes/${_id}`, {
+        costumeNumber,
+        description,
+      })
+      .then((response) => {
+        console.log("COSTUME UPDATED:", response.data);
+        message.success({
+          content: "costume information updated",
+        });
+        // lift the state
+        this.props.refreshCostumes();
+        this.setState({
+          disabledInput: !this.state.disabledInput,
+        });
+      })
+      .catch((err) => {
+        if (err.response.status === 403) {
+          this.props.history.push("/login");
+        }
+        message.error({
+          content: err.response.data.message,
+        });
+      });
+  };
+
   render() {
-    const { costumeNumber, description, imageUrl, character, project, _id } = this.state;
+    const {
+      costumeNumber,
+      description,
+      imageUrl,
+      scenes,
+      character,
+      project,
+      _id,
+      disabledInput,
+      visiblePopConfirm,
+      allScenes,
+    } = this.state;
     const tabList = [
       {
-        key: 'info',
-        tab: 'info'
+        key: "info",
+        tab: "info",
       },
       {
-        key: 'scenes',
-        tab: 'scenes'
-      }
-    ]
-    
+        key: "scenes",
+        tab: "scenes",
+      },
+    ];
+
+    const scene = <div></div>;
+
     const info = (
       <div>
         <Link
-          href={`/projects/${project}/characters/${character}/costumes/${_id}`}
+          to={`/projects/${project}/characters/${character}/costumes/${_id}`}
           style={{
             display: "flex",
             flexDirection: "column",
@@ -130,18 +228,57 @@ class CostumeCard extends Component {
             src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
           />
         </Link>
-        <Descriptions title="Costume info">
-          <Descriptions.Item label="costumeNumber">{costumeNumber}</Descriptions.Item>
-          <Descriptions.Item label="description">{description}</Descriptions.Item>
+
+        <Form>
+          <Form.Item label="costumeNumber">
+            <Input
+              value={costumeNumber}
+              name="costumeNumber"
+              onChange={this.handleChange}
+              disabled={disabledInput}
+            />
+          </Form.Item>
+          <Form.Item label="description">
+            <Input
+              value={description}
+              name="description"
+              onChange={this.handleChange}
+              disabled={disabledInput}
+            />
+          </Form.Item>
+        </Form>
+        <Descriptions>
+          <Descriptions.Item label="appears in scenes">
+            <SelectScene
+              key={_id + "sceneNumber"}
+              options={allScenes}
+              costId={_id}
+              charId={character}
+              projId={project}
+              selectedItems={this.state.scenes}
+              refreshCostume={this.getCostumeInfo}
+              showing="sceneNumber"
+              disabled={disabledInput}
+            />
+          </Descriptions.Item>
+          {/* <Descriptions.Item label="appears in story days">
+            {scenes.map((scene) => {
+              return (
+                <div>
+                  <Descriptions.Item>{scene.storyDayNumber}, </Descriptions.Item>
+
+                </div>
+              );
+            })}
+          </Descriptions.Item> */}
         </Descriptions>
       </div>
-    )
-    
+    );
+
     const contentList = {
       info,
-      scenes: <p>content</p>
-    }
-
+      scenes: <p>content</p>,
+    };
 
     return (
       <div>
@@ -150,11 +287,14 @@ class CostumeCard extends Component {
           // style={{ width: 300, margin: 30 }}
           tabList={tabList}
           activeTabKey={this.state.key}
-          onTabChange={key => {
-            this.onTabChange(key,'key');
+          onTabChange={(key) => {
+            this.onTabChange(key, "key");
           }}
           actions={[
-            
+            <Tooltip title="enable edits">
+              <EditOutlined key="edit" onClick={this.enableEdit} />
+            </Tooltip>,
+
             <Tooltip title="delete costume">
               <Popconfirm
                 title="Are you really sure you want to delete this costume?"
@@ -168,9 +308,26 @@ class CostumeCard extends Component {
                 />
               </Popconfirm>
             </Tooltip>,
+
+            <Tooltip title="submit edits">
+              <Popconfirm
+                title="Do you want to submit your changes?"
+                onConfirm={this.handleEditSubmit}
+                okText="Yes"
+                cancelText="No"
+                visible={visiblePopConfirm}
+                onVisibleChange={this.handleVisibleChange}
+              >
+                <CheckOutlined
+                  key="confirm"
+                  style={{ color: this.state.editIconColor }}
+                  onClick={(e) => e.preventDefault()}
+                />
+              </Popconfirm>
+            </Tooltip>,
           ]}
         >
-         {contentList[this.state.key]}
+          {contentList[this.state.key]}
         </Card>
       </div>
     );
