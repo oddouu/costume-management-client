@@ -73,16 +73,11 @@ class Signup extends Component {
       .signup(username, password)
       .then((response) => {
         console.log(response);
-        this.setState({ submitState: "Creating account..." });
-        if (response.status === 200) {
+        this.setState({ submitState: "Creating account...", authenticated: true });
           // set the whole application with the user that just logged in - lifting up the state by using setCurrentUser function in the parent component
           this.props.setCurrentUser(response);
-          this.setState({ authenticated: true });
-          // } else {
-          //   console.log(response)
-        } else {
-          this.setState({error: response})
-        }
+          localStorage.setItem("loggedin", true);
+
         this.enterLoading(0);
       });
   };

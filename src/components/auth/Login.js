@@ -59,8 +59,8 @@ class Login extends Component {
           content: "Something went wrong, please try again.",
         });
         this.setState({
-          submitState: "Log in"
-        })
+          submitState: "Log in",
+        });
       }
     }, 2);
   };
@@ -78,14 +78,9 @@ class Login extends Component {
     const { username, password } = this.state;
     this.service.login(username, password).then((response) => {
       console.log(response);
-      this.setState({ submitState: "Logging in..." });
-      if (response.status === 200) {
-        // set the whole application with the user that just logged in - lifting up the state by using setCurrentUser function in the parent component
-        this.props.setCurrentUser(response);
-        this.setState({ authenticated: true });
-      // } else {
-      //   console.log(response)
-       }
+      this.props.setCurrentUser(response);
+      this.setState({ submitState: "Logging in...", authenticated: true });
+     localStorage.setItem("loggedin", true);
       this.enterLoading(0);
     });
   };
