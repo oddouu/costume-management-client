@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import NewScene from "./NewScene";
 import instance from "../../instance";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./SceneList.css";
 
 import {
@@ -20,10 +20,12 @@ import {
   Popconfirm,
   Form,
   Button,
-  Select
+  Select,
 } from "antd";
 
 import SelectCharacter from "./SelectCharacter";
+import SelectLocation from "./locations/SelectLocation";
+import NewLocation from "./locations/NewLocation"
 
 const { Option } = Select;
 const EditableContext = React.createContext();
@@ -100,6 +102,31 @@ const EditableCell = ({
     );
   }
 
+  // if (editable && dataIndex === "location") {
+  //   childNode = editing ? (
+  //     <Form.Item
+  //       style={{
+  //         margin: 0,
+  //       }}
+  //       name={dataIndex}
+  //     >
+  //       <Select ref={inputRef} onSelect={save} onBlur={save} >
+  //         <Option value="Create new Location"><Button style={{ width: "100%" }} >Create new Location</Button></Option>
+  //         <Option value="EXT">EXT</Option>
+  //       </Select>
+  //     </Form.Item>
+  //   ) : (
+  //     <div
+  //       className="editable-cell-value-wrap"
+  //       style={{
+  //         paddingRight: 24,
+  //       }}
+  //       onClick={toggleEdit}
+  //     >
+  //       {children}
+  //     </div>
+  //   );
+  // }
   if (editable && dataIndex === "intExt") {
     childNode = editing ? (
       <Form.Item
@@ -184,7 +211,7 @@ const EditableCell = ({
 };
 
 class SceneList extends Component {
-  state = {characters: []};
+  state = { characters: [], locations: [] };
 
   columns = [
     {
@@ -218,7 +245,33 @@ class SceneList extends Component {
       dataIndex: "season",
       editable: true,
     },
-   
+
+    {
+      title: "location",
+      dataIndex: "location",
+      render: (text, record) => (
+        <SelectLocation
+          key={record._id + "sceneNumber"}
+          options={this.state.locations}
+          scene={record}
+          projId={record.project}
+          sceneId={record._id}
+          selectedItem={record.locations}
+          refreshScenes={this.getAllScenes}
+        />
+      ),
+    },
+    {
+      title: "characters",
+      dataIndex: "characters",
+      render: (text, record) => (
+        <SelectCharacter
+          scene={record}
+          characters={this.state.characters}
+          refreshScenes={this.getAllScenes}
+        />
+      ),
+    },
     {
       title: "operation",
       dataIndex: "operation",
@@ -231,37 +284,52 @@ class SceneList extends Component {
             >
               <Button>Delete</Button>
             </Popconfirm>
-            <SelectCharacter scene={record} characters={this.state.characters} refreshScenes={this.getAllScenes}/>
           </div>
         ) : null,
     },
   ];
 
-  getAllScenes = () => {
+  getAllLocations = () => {
     const { params } = this.props.match;
-    instance.get(`/projects/${params.projId}/scenes`).then((response) => {
-      if (response.data.length) {
-        for (let i = 0; i < response.data.length; i++) {
-          response.data[i].key = i;
-        }
-      } else {
-        response.data.length = 0;
+    instance.get(`/projects/${params.projId}/locations`).then((response) => {
+      if (response.data.length >= 1) {
+        console.log("ALL LOCATIONS", response.data);
+        this.setState({
+          locations: response.data,
+        });
       }
+    });
+  };
 
-      this.setState({
-        scenes: response.data,
-        count: response.data.length,
+  getAllScenes = () => {
+    this.getAllLocations();
+
+    const { params } = this.props.match;
+    instance
+      .get(`/projects/${params.projId}/scenes`)
+      .then((response) => {
+        if (response.data.length) {
+          for (let i = 0; i < response.data.length; i++) {
+            response.data[i].key = i;
+          }
+        } else {
+          response.data.length = 0;
+        }
+
+        this.setState({
+          scenes: response.data,
+          count: response.data.length,
+        });
+      })
+      .then(() => {
+        instance
+          .get(`/projects/${params.projId}/characters`)
+          .then((response) => {
+            this.setState({
+              characters: response.data,
+            });
+          });
       });
-    })
-    .then(()=>{
-      instance
-        .get(`/projects/${params.projId}/characters`)
-        .then(response => {
-          this.setState({
-            characters: response.data
-          })
-        })
-    })
   };
 
   handleDelete = (scene) => {
@@ -348,10 +416,10 @@ class SceneList extends Component {
         >
           Add a row
         </Button>
+        <NewLocation projId={params.projId} refreshScenes={this.getAllScenes} />
+
         <Link to="/projects">
-        <Button>
-Go back to projects
-        </Button>
+          <Button>Go back to projects</Button>
         </Link>
 
         <Table
