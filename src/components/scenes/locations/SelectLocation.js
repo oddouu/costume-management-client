@@ -1,8 +1,16 @@
 import React, { Component } from "react";
-import { Select, message, Divider, Input } from "antd";
+import {
+  Select,
+  message,
+  Divider,
+  Input,
+  Button,
+  Popconfirm,
+  Tooltip,
+} from "antd";
 import instance from "../../../instance";
 import NewLocation from "./NewLocation";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 const { Option } = Select;
 
 // NEED TO GET THE LOCATION CONNECTED TO A SPECIFIC SCENE
@@ -57,9 +65,6 @@ class SelectLocation extends Component {
           this.props.history.push("/login");
         }
         message.error(err.response.data.message);
-        this.setState({
-          submitState: "Create location",
-        });
       });
   };
 
@@ -80,6 +85,15 @@ class SelectLocation extends Component {
       )
       .then((response) => {
         console.log("WOOP WOOP", response.data);
+        this.getAllLocations();
+      });
+  };
+
+  handleDelete = (key) => {
+    instance
+      .delete(`/projects/${this.props.projId}/locations/${key}`)
+      .then((response) => {
+        console.log("deleted!", response.data);
         this.getAllLocations();
       });
   };
@@ -116,7 +130,40 @@ class SelectLocation extends Component {
         }
         dropdownRender={(menu) => (
           <div>
-            {menu}
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <div id="left-div-icons">
+                {options.map((eachOption) => {
+                  return (
+                    <div>
+                      <Tooltip title="delete location">
+                        <Popconfirm
+                          title="Are you really sure you want to delete this location?"
+                          onConfirm={() => this.handleDelete(eachOption._id)}
+                          okText="Yes"
+                          cancelText="No"
+                          placement="left"
+                        >
+                          <Button
+                            danger
+                            ghost
+                            type="link"
+                            key={eachOption._id}
+                            onClick={(e) => e.preventDefault()}
+                            style={{ padding: "5px 12px" }}
+                          >
+                            <DeleteOutlined />
+                          </Button>
+                        </Popconfirm>
+                      </Tooltip>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div id="right-div-options" style={{ width: "90%" }}>
+                {menu}
+              </div>
+            </div>
             <Divider style={{ margin: "4px 0" }} />
             <div style={{ display: "flex", flexWrap: "nowrap", padding: 8 }}>
               <Input
@@ -142,7 +189,7 @@ class SelectLocation extends Component {
       >
         {this.state.options.map((eachOption) => (
           <Option key={eachOption._id} value={eachOption._id}>
-            {eachOption.decor || ""}
+            {eachOption.decor}
           </Option>
         ))}
       </Select>
