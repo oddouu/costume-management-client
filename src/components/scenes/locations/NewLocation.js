@@ -5,11 +5,11 @@ import { Modal, Button, message, Form, Input } from "antd";
 
 class NewLocation extends Component {
   state = {
-    decor: "",
-    locale: "",
+    newDecor: "",
+    newLocale: "",
     visible: false,
     responseFromAPI: false,
-    submitState: "Create costume",
+    submitState: "Create location",
     loadings: [],
   };
 
@@ -32,8 +32,8 @@ class NewLocation extends Component {
       });
       if (this.state.responseFromAPI) {
         this.setState({
-          decor: "",
-          locale: "",
+          newDecor: "",
+          newLocale: "",
         });
         message.success({
           content: "Success!",
@@ -60,6 +60,7 @@ class NewLocation extends Component {
   };
 
   handleChange = (e) => {
+    console.log("EVENT TARGET", e.target);
     const { name, value } = e.target;
     this.setState({
       [name]: value,
@@ -67,13 +68,13 @@ class NewLocation extends Component {
   };
 
   handleFormSubmit = () => {
-    let { decor, locale } = this.state;
+    let { newDecor, newLocale } = this.state;
 
     const project = this.props.projId;
 
     const newLocation = {
-      decor,
-      locale
+      newDecor,
+      newLocale,
     };
 
     instance
@@ -82,7 +83,7 @@ class NewLocation extends Component {
         this.setState({ submitState: "Creating location..." });
         console.log("NEW LOCATION", response.data);
         //Lift the state
-        this.props.refreshScenes();
+        this.props.refreshLocations();
         this.setState({ responseFromAPI: true });
 
         this.enterLoading(0);
@@ -99,7 +100,7 @@ class NewLocation extends Component {
   };
 
   render() {
-    const { visible, confirmLoading } = this.state;
+    const { visible } = this.state;
 
     return (
       <div>
@@ -110,7 +111,6 @@ class NewLocation extends Component {
           title="New Location"
           visible={visible}
           onCancel={this.handleCancel}
-          confirmLoading={confirmLoading}
           footer={[
             <Button
               type="primary"
@@ -132,25 +132,21 @@ class NewLocation extends Component {
             initialValues={{ remember: true }}
             onFinish={this.handleFormSubmit}
           >
-            <Form.Item
-              rules={[
-                { required: true, message: "Please input the location decor!" },
-              ]}
-            >
+            <Form.Item>
               <Input
-                placeholder="decor"
-                name="decor"
+                placeholder="newDecor"
+                name="newDecor"
                 onChange={this.handleChange}
-                value={this.state.decor}
+                value={this.state.newDecor}
               />
             </Form.Item>
             <Form.Item>
               <Input
                 type="text"
-                name="locale"
-                value={this.state.locale}
+                name="newLocale"
+                value={this.state.newLocale}
                 onChange={this.handleChange}
-                placeholder="locale"
+                placeholder="newLocale"
               />
             </Form.Item>
           </Form>

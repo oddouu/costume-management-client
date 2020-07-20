@@ -25,7 +25,7 @@ import {
 
 import SelectCharacter from "./SelectCharacter";
 import SelectLocation from "./locations/SelectLocation";
-import NewLocation from "./locations/NewLocation"
+// import NewLocation from "./locations/NewLocation"
 
 const { Option } = Select;
 const EditableContext = React.createContext();
@@ -211,7 +211,7 @@ const EditableCell = ({
 };
 
 class SceneList extends Component {
-  state = { characters: [], locations: [] };
+  state = { characters: [] };
 
   columns = [
     {
@@ -252,11 +252,10 @@ class SceneList extends Component {
       render: (text, record) => (
         <SelectLocation
           key={record._id + "sceneNumber"}
-          options={this.state.locations}
           scene={record}
           projId={record.project}
           sceneId={record._id}
-          selectedItem={record.locations}
+          selectedItem={record.location}
           refreshScenes={this.getAllScenes}
         />
       ),
@@ -289,20 +288,8 @@ class SceneList extends Component {
     },
   ];
 
-  getAllLocations = () => {
-    const { params } = this.props.match;
-    instance.get(`/projects/${params.projId}/locations`).then((response) => {
-      if (response.data.length >= 1) {
-        console.log("ALL LOCATIONS", response.data);
-        this.setState({
-          locations: response.data,
-        });
-      }
-    });
-  };
 
   getAllScenes = () => {
-    this.getAllLocations();
 
     const { params } = this.props.match;
     instance
@@ -416,7 +403,7 @@ class SceneList extends Component {
         >
           Add a row
         </Button>
-        <NewLocation projId={params.projId} refreshScenes={this.getAllScenes} />
+        {/* <NewLocation projId={params.projId} /> */}
 
         <Link to="/projects">
           <Button>Go back to projects</Button>

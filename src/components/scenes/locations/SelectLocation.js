@@ -1,81 +1,149 @@
 import React, { Component } from "react";
-import { Select } from "antd";
+import { Select, message, Divider, Input } from "antd";
 import instance from "../../../instance";
+import NewLocation from "./NewLocation";
+import { PlusOutlined } from "@ant-design/icons";
 const { Option } = Select;
 
-// NEED TO GET ALL LOCATIONS CONNECTED TO A SPECIFIC SCENE
-// NEED TO PUSH A LOCATION INTO A SPECIFIC SCENE
+// NEED TO GET THE LOCATION CONNECTED TO A SPECIFIC SCENE
+// NEED TO ATTACH A LOCATION TO A SPECIFIC SCENE
 
 class SelectLocation extends Component {
   state = {
-    selectedItem: "",
     options: [],
+    selected: this.props.scene.location,
+    decor: "",
   };
 
   componentDidMount() {
-    console.log(
-      "HI, THE SelectLocation JUST MOUNTED. THESE ARE MY OPTIONS",
-      this.props.options
-    );
-
-    this.setState({
-      options: this.props.options,
-    });
-
-    if (this.props.selectedItem) {
-      const selectedItem = this.props.selectedItem._id;
-      this.setState({
-        selectedItem,
-      });
-    }
+    this.getAllLocations();
   }
 
-  handleChange = (selectedItem) => {
-    const { projId, sceneId } = this.props;
-
-    this.setState({
-      selectedItem: selectedItem._id,
-    });
-
-    console.log(
-      "HELLO FROM SelectLocation ONCHANGE! I've selected these items:",
-      selectedItem
-    );
-
-   if (!selectedItem.length) {
-       selectedItem = ""
-   }
+  getAllLocations = () => {
     instance
-      .put(`/projects/${projId}/scenes/${sceneId}/addLocation`, {
-        location: selectedItem[selectedItem.length-1],
-      })
+      .get(`/projects/${this.props.projId}/locations`)
       .then((response) => {
-        console.log("ADDED/REMOVED LOCATION: ", response.data);
-        this.props.refreshScenes();
+        if (response.data.length >= 1) {
+          console.log("ALL LOCATIONS", response.data);
+          this.setState({
+            options: response.data,
+          });
+        }
       });
   };
 
+  addNewLocation = () => {
+    let { decor } = this.state;
+
+    const project = this.props.projId;
+
+    const newLocation = {
+      decor,
+    };
+
+    instance
+      .post(`/projects/${project}/locations`, newLocation)
+      .then((response) => {
+        this.setState({ submitState: "Creating location..." });
+        console.log("NEW LOCATION", response.data);
+        message.success({
+          content: "Success!",
+        });
+        //Lift the state
+        this.getAllLocations();
+      })
+      .catch((err) => {
+        if (err.response.status === 403) {
+          this.props.history.push("/login");
+        }
+        message.error(err.response.data.message);
+        this.setState({
+          submitState: "Create location",
+        });
+      });
+  };
+
+  onNameChange = (event) => {
+    this.setState({
+      decor: event.target.value,
+    });
+  };
+
+  onChange = (selectedLocationId) => {
+    console.log(`selected ${selectedLocationId}`);
+
+    const { projId, sceneId } = this.props;
+
+    instance
+      .put(
+        `/projects/${projId}/locations/${selectedLocationId}/addScene/${sceneId}`
+      )
+      .then((response) => {
+        console.log("WOOP WOOP", response.data);
+        this.getAllLocations();
+      });
+  };
+
+  onBlur = () => {
+    console.log("blur");
+  };
+
+  onFocus = () => {
+    console.log("focus");
+  };
+
+  onSearch = (val) => {
+    console.log("search: ", val);
+  };
+
   render() {
-    const { selectedItem, options } = this.state;
-    console.log("OPTIONS IN RENDER", options);
-    // const filteredOptions = options.filter(
-    //   (o) => !selectedItem.includes(o)
-    // );
-    // console.log("CHARACTERS: ", this.props.scene)
+    const { options, decor, selected } = this.state;
     return (
       <Select
-        mode="multiple"
-        value={selectedItem}
-        onChange={this.handleChange}
-        style={{
-          width: "100%",
-        }}
-        name="location"
+        showSearch
+        defaultValue={selected}
+        style={{ width: 200 }}
+        placeholder="Select..."
+        optionFilterProp="children"
+        onChange={this.onChange}
+        onFocus={this.onFocus}
+        onBlur={this.onBlur}
+        onSearch={this.onSearch}
+        filterOption={(input, option) =>
+          // console.log(option.children, input)
+          // option.locale.toLowerCase().includes(input.toLocaleLowerCase()) || option.decor.toLowerCase().includes(input.toLocaleLowerCase())
+          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        }
+        dropdownRender={(menu) => (
+          <div>
+            {menu}
+            <Divider style={{ margin: "4px 0" }} />
+            <div style={{ display: "flex", flexWrap: "nowrap", padding: 8 }}>
+              <Input
+                style={{ flex: "auto" }}
+                value={decor}
+                onChange={this.onNameChange}
+                onClick={() => console.log("CLICKED!")}
+              />
+              <a
+                style={{
+                  flex: "none",
+                  padding: "8px",
+                  display: "block",
+                  cursor: "pointer",
+                }}
+                onClick={this.addNewLocation}
+              >
+                <PlusOutlined /> Add item
+              </a>
+            </div>
+          </div>
+        )}
       >
-        {options.map((item) => (
-          <Select.Option key={item._id} value={item._id}>
-            {item.decor}, {item.locale}
-          </Select.Option>
+        {this.state.options.map((eachOption) => (
+          <Option key={eachOption._id} value={eachOption._id}>
+            {eachOption.decor || ""}
+          </Option>
         ))}
       </Select>
     );
