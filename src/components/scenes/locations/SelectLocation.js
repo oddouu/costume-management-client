@@ -84,7 +84,7 @@ class SelectLocation extends Component {
         `/projects/${projId}/locations/${selectedLocationId}/addScene/${sceneId}`
       )
       .then((response) => {
-        console.log("WOOP WOOP", response.data);
+        console.log("location attached to scene!", response.data);
         this.getAllLocations();
       });
   };
