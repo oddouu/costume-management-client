@@ -23,6 +23,7 @@ import {
 import { Link } from "react-router-dom";
 import MeasuresTab from "./measures/MeasuresTab";
 import { FormInstance } from "antd/lib/form";
+import UploadImage from "../images/UploadImage";
 
 const { Option } = Select;
 
@@ -455,7 +456,9 @@ class CharacterCard extends Component {
 
     const overview = (
       <div>
-        <a
+
+        <UploadImage projId={project}/>
+        {/* <a
           href={`/projects/${_id}`}
           style={{
             display: "flex",
@@ -473,7 +476,7 @@ class CharacterCard extends Component {
             alt="example"
             src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
           />
-        </a>
+        </a> */}
         <Form style={{ marginTop: "20px" }}>
           <Form.Item label="actorName">
             <Input
