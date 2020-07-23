@@ -58,6 +58,7 @@ class CharacterList extends Component {
               <CharacterCard
                 key={character._id + "Card"}
                 character={{ ...character }}
+                charId={character._id}
                 refreshCharacters={this.getAllCharacters}
                 history={this.props.history}
               />

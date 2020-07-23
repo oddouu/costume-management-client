@@ -28,7 +28,7 @@ class CostumeCard extends Component {
   state = {
     costumeNumber: "",
     description: "",
-    imageUrl: "",
+    images: [],
     character: "",
     scenes: [],
     project: "",
@@ -85,22 +85,25 @@ class CostumeCard extends Component {
         const {
           costumeNumber,
           description,
-          imageUrl,
+          images,
           character,
           project,
           scenes,
           _id,
         } = response.data;
 
+        const costume = response.data;
+
         console.log("COSTUME INFO", response.data);
         this.setState({
           costumeNumber,
           description,
-          imageUrl,
+          images,
           character,
           project,
           scenes,
           _id,
+          costume
         });
 
         // GET ALL SCENES OF THE PROJECT AS WELL
@@ -185,7 +188,6 @@ class CostumeCard extends Component {
     const {
       costumeNumber,
       description,
-      imageUrl,
       scenes,
       character,
       project,
@@ -193,6 +195,7 @@ class CostumeCard extends Component {
       disabledInput,
       visiblePopConfirm,
       allScenes,
+      images
     } = this.state;
     const tabList = [
       {
@@ -206,6 +209,9 @@ class CostumeCard extends Component {
     ];
 
     const scene = <div></div>;
+
+
+ 
 
     const info = (
       <div>
@@ -223,9 +229,10 @@ class CostumeCard extends Component {
               marginRight: "auto",
               marginLeft: "auto",
               objectFit: "cover",
+              width: "100%"
             }}
             alt="example"
-            src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+            src={images[0] ? images[0].imageUrl : "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"}
           />
         </Link>
 

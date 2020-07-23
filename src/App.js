@@ -36,16 +36,13 @@ class App extends Component {
     this.fetchUser();
   }
 
-
   // 1. save the user into the browser local storage
 
   //2. check if the user is still logged in by calling the backedn
 
   fetchUser = () => {
     if (this.state.currentUser === null) {
-      this.service
-      .loggedin()
-      .then((response) => {
+      this.service.loggedin().then((response) => {
         if (response._id) {
           this.setCurrentUser(response);
           localStorage.setItem("loggedin", true);
@@ -66,8 +63,7 @@ class App extends Component {
         <Content className="site-layout-content" style={{ padding: "0 50px" }}>
           <Switch>
             {/* Passing props using render method inside the Route component */}
-            
-            
+
             <Route
               path="/login"
               render={(props) => (
@@ -88,37 +84,67 @@ class App extends Component {
             <Route
               exact
               path="/projects/:projId/characters"
-              render={(props) => (
-                <CharacterList
-                  currentUser={this.state.currentUser}
-                  {...props}
-                />
-              )}
+              render={(props) => {
+                if (localStorage.getItem("loggedin")) {
+                  return (
+                    <CharacterList
+                      currentUser={this.state.currentUser}
+                      {...props}
+                    />
+                  );
+                } else {
+                  return <Redirect to="/login" />;
+                }
+              }}
             />
             <Route
               exact
               path="/projects/:projId/scenes"
-              render={(props) => (
-                <SceneList currentUser={this.state.currentUser} {...props} />
-              )}
+              render={(props) => {
+                if (localStorage.getItem("loggedin")) {
+                  return (
+                    <SceneList
+                      currentUser={this.state.currentUser}
+                      {...props}
+                    />
+                  );
+                } else {
+                  return <Redirect to="/login" />;
+                }
+              }}
             />
             <Route
               exact
               path="/projects/:projId/characters/:charId/costumes"
-              render={(props) => (
-                <CostumeList currentUser={this.state.currentUser} {...props} />
-              )}
+              render={(props) => {
+                if (localStorage.getItem("loggedin")) {
+                  return (
+                    <CostumeList
+                      currentUser={this.state.currentUser}
+                      {...props}
+                    />
+                  );
+                } else {
+                  return <Redirect to="/login" />;
+                }
+              }}
             />
 
             <Route
               exact
               path="/projects/:projId/characters/:charId/costumes/:costId"
-              render={(props) => (
-                <CostumeDetail
-                  currentUser={this.state.currentUser}
-                  {...props}
-                />
-              )}
+              render={(props) => {
+                if (localStorage.getItem("loggedin")) {
+                  return (
+                    <CostumeDetail
+                      currentUser={this.state.currentUser}
+                      {...props}
+                    />
+                  );
+                } else {
+                  return <Redirect to="/login" />;
+                }
+              }}
             />
 
             <Route

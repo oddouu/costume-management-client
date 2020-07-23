@@ -28,7 +28,6 @@ import UploadImage from "../images/UploadImage";
 const { Option } = Select;
 
 class CharacterCard extends Component {
-
   state = {
     characterName: "",
     actorName: "",
@@ -36,7 +35,6 @@ class CharacterCard extends Component {
     imageUrl: "",
     numberOfCostumes: 0,
     project: "",
-    _id: "",
     disabledInput: true,
     visiblePopConfirm: false,
     editIconColor: "rgba(0, 0, 0, 0.45)",
@@ -56,6 +54,7 @@ class CharacterCard extends Component {
     suitSize: "",
     braSize: "",
     measId: "",
+    charId: "",
     cmAfter: true,
     cmBefore: true,
   };
@@ -73,7 +72,7 @@ class CharacterCard extends Component {
 
   getCharacterInfo = () => {
     const projId = this.props.character.project;
-    const charId = this.props.character._id;
+    const charId = this.props.charId;
 
     instance
       .get(`/projects/${projId}/characters/${charId}`)
@@ -83,36 +82,49 @@ class CharacterCard extends Component {
           characterName,
           actorName,
           age,
-          imageUrl,
           numberOfCostumes,
           project,
-          charId: _id,
+          image
         } = response.data;
+
+        const charId = response.data._id
+
+        if (image) {
+          const { imageUrl } = image;
+          if (imageUrl) {
+            this.setState({
+              imageUrl,
+            });
+            console.log("IMAGEURL",this.state.imageUrl)
+          }
+        }
+
 
         this.setState({
           characterName,
           actorName,
           age,
-          imageUrl,
           numberOfCostumes,
           project,
-          charId: _id,
+          charId
         });
       });
   };
 
   componentDidMount() {
-    this.props.character &&
-      this.setState({
-        characterName: this.props.character.characterName,
-        actorName: this.props.character.actorName,
-        age: this.props.character.age,
-        imageUrl: this.props.character.imageUrl,
-        numberOfCostumes: this.props.character.numberOfCostumes,
-        project: this.props.character.project,
-        _id: this.props.character._id,
-      });
-    console.log("CHARACTER", this.props.character);
+    this.getCharacterInfo();
+    console.log("CHARID", this.state.charId)
+    // this.props.character &&
+    //   this.setState({
+    //     characterName: this.props.character.characterName,
+    //     actorName: this.props.character.actorName,
+    //     age: this.props.character.age,
+    //     imageUrl: this.props.character.imageUrl,
+    //     numberOfCostumes: this.props.character.numberOfCostumes,
+    //     project: this.props.character.project,
+    //     _id: this.props.character._id,
+    //   });
+    // console.log("CHARACTER", this.props.character);
   }
 
   handleChange = (e) => {
@@ -127,8 +139,8 @@ class CharacterCard extends Component {
     const name = object.children[0].props.name;
 
     this.setState({
-      [name] : selectedValue
-    })
+      [name]: selectedValue,
+    });
     //     const name = selectedOption.value;
     //     const value = selectedOption.label;
     //     console.log(name, value)
@@ -165,11 +177,12 @@ class CharacterCard extends Component {
   handleEditSubmit = () => {
     console.log("MEASID", this.state.measId);
     if (this.state.key === "tab1") {
-      const { _id, characterName, actorName, age, project } = this.state;
+      console.log("TAB1")
+      const { charId, characterName, actorName, age, project } = this.state;
 
-      console.log("PUT REQ", `/projects/${project}/characters/${_id}`);
+      console.log("PUT REQ", `/projects/${project}/characters/${charId}`);
       instance
-        .put(`/projects/${project}/characters/${_id}`, {
+        .put(`/projects/${project}/characters/${charId}`, {
           characterName,
           actorName,
           age,
@@ -190,10 +203,10 @@ class CharacterCard extends Component {
             this.props.history.push("/login");
           }
           message.error({
-            content: err.response.data.message,
+            content: "unauthorized",
           });
         });
-    } else {
+    } else if (this.state.key === 'tab2') {
       const {
         heightMeasures,
         shouldersMeasures,
@@ -210,12 +223,12 @@ class CharacterCard extends Component {
         suitSize,
         braSize,
         measId,
-        _id,
+        charId,
         project,
       } = this.state;
 
       instance
-        .put(`/projects/${project}/characters/${_id}/measures/`, {
+        .put(`/projects/${project}/characters/${charId}/measures/`, {
           heightMeasures, // .getFieldValue(value)
 
           shouldersMeasures,
@@ -255,10 +268,10 @@ class CharacterCard extends Component {
   };
 
   handleDeleteSubmit = () => {
-    const { _id, project } = this.state;
+    const { charId, project } = this.state;
 
     instance
-      .delete(`/projects/${project}/characters/${_id}`)
+      .delete(`/projects/${project}/characters/${charId}`)
       .then((response) => {
         console.log(response);
         message.success({
@@ -436,7 +449,7 @@ class CharacterCard extends Component {
       age,
       numberOfCostumes,
       imageUrl,
-      _id,
+      charId,
       disabledInput,
       visiblePopConfirm,
     } = this.state;
@@ -444,7 +457,7 @@ class CharacterCard extends Component {
     const menu = (
       <Menu>
         <Menu.Item>
-          <Link to={`/projects/${project}/characters/${_id}/costumes`}>
+          <Link to={`/projects/${project}/characters/${charId}/costumes`}>
             Go to costumes
           </Link>
         </Menu.Item>
@@ -456,8 +469,7 @@ class CharacterCard extends Component {
 
     const overview = (
       <div>
-
-        <UploadImage projId={project}/>
+        <UploadImage staticImageUrl={imageUrl} projId={project} charId={charId} />
         {/* <a
           href={`/projects/${_id}`}
           style={{
@@ -617,14 +629,30 @@ class CharacterCard extends Component {
             onChange={this.handleSelectChange}
             disabled={disabledInput}
           >
-            <Option value="N/A" key="N/A"><span name="shirtSize"></span>N/A</Option>
-            <Option value="XS" key="XS"><span name="shirtSize"></span>XS</Option>
-            <Option value="S" key="S"><span name="shirtSize"></span>S</Option>
-            <Option value="M" key="M"><span name="shirtSize"></span>M</Option>
-            <Option value="L" key="L"><span name="shirtSize"></span>L</Option>
-            <Option value="XL" key="XL"><span name="shirtSize"></span>XL</Option>
-            <Option value="XXL" key="XXL"><span name="shirtSize"></span>XXL</Option>
-            <Option value="XXXL" key="XXXL"><span name="shirtSize"></span>XXXL</Option>
+            <Option value="N/A" key="N/A">
+              <span name="shirtSize"></span>N/A
+            </Option>
+            <Option value="XS" key="XS">
+              <span name="shirtSize"></span>XS
+            </Option>
+            <Option value="S" key="S">
+              <span name="shirtSize"></span>S
+            </Option>
+            <Option value="M" key="M">
+              <span name="shirtSize"></span>M
+            </Option>
+            <Option value="L" key="L">
+              <span name="shirtSize"></span>L
+            </Option>
+            <Option value="XL" key="XL">
+              <span name="shirtSize"></span>XL
+            </Option>
+            <Option value="XXL" key="XXL">
+              <span name="shirtSize"></span>XXL
+            </Option>
+            <Option value="XXXL" key="XXXL">
+              <span name="shirtSize"></span>XXXL
+            </Option>
           </Select>
         </Form.Item>
         <Form.Item label="coatSize">
@@ -635,14 +663,30 @@ class CharacterCard extends Component {
             onChange={this.handleSelectChange}
             disabled={disabledInput}
           >
-            <Option value="N/A" key="N/A"><span name="coatSize"></span>N/A</Option>
-            <Option value="XS" key="XS"><span name="coatSize"></span>XS</Option>
-            <Option value="S" key="S"><span name="coatSize"></span>S</Option>
-            <Option value="M" key="M"><span name="coatSize"></span>M</Option>
-            <Option value="L" key="L"><span name="coatSize"></span>L</Option>
-            <Option value="XL" key="XL"><span name="coatSize"></span>XL</Option>
-            <Option value="XXL" key="XXL"><span name="coatSize"></span>XXL</Option>
-            <Option value="XXXL" key="XXXL"><span name="coatSize"></span>XXXL</Option>
+            <Option value="N/A" key="N/A">
+              <span name="coatSize"></span>N/A
+            </Option>
+            <Option value="XS" key="XS">
+              <span name="coatSize"></span>XS
+            </Option>
+            <Option value="S" key="S">
+              <span name="coatSize"></span>S
+            </Option>
+            <Option value="M" key="M">
+              <span name="coatSize"></span>M
+            </Option>
+            <Option value="L" key="L">
+              <span name="coatSize"></span>L
+            </Option>
+            <Option value="XL" key="XL">
+              <span name="coatSize"></span>XL
+            </Option>
+            <Option value="XXL" key="XXL">
+              <span name="coatSize"></span>XXL
+            </Option>
+            <Option value="XXXL" key="XXXL">
+              <span name="coatSize"></span>XXXL
+            </Option>
           </Select>
         </Form.Item>
         <Form.Item label="trousersSize">
@@ -653,14 +697,30 @@ class CharacterCard extends Component {
             onChange={this.handleSelectChange}
             disabled={disabledInput}
           >
-            <Option value="N/A" key="N/A"><span name="trousersSize"></span>N/A</Option>
-            <Option value="XS" key="XS"><span name="trousersSize"></span>XS</Option>
-            <Option value="S" key="S"><span name="trousersSize"></span>S</Option>
-            <Option value="M" key="M"><span name="trousersSize"></span>M</Option>
-            <Option value="L" key="L"><span name="trousersSize"></span>L</Option>
-            <Option value="XL" key="XL"><span name="trousersSize"></span>XL</Option>
-            <Option value="XXL" key="XXL"><span name="trousersSize"></span>XXL</Option>
-            <Option value="XXXL" key="XXXL"><span name="trousersSize"></span>XXXL</Option>
+            <Option value="N/A" key="N/A">
+              <span name="trousersSize"></span>N/A
+            </Option>
+            <Option value="XS" key="XS">
+              <span name="trousersSize"></span>XS
+            </Option>
+            <Option value="S" key="S">
+              <span name="trousersSize"></span>S
+            </Option>
+            <Option value="M" key="M">
+              <span name="trousersSize"></span>M
+            </Option>
+            <Option value="L" key="L">
+              <span name="trousersSize"></span>L
+            </Option>
+            <Option value="XL" key="XL">
+              <span name="trousersSize"></span>XL
+            </Option>
+            <Option value="XXL" key="XXL">
+              <span name="trousersSize"></span>XXL
+            </Option>
+            <Option value="XXXL" key="XXXL">
+              <span name="trousersSize"></span>XXXL
+            </Option>
           </Select>
         </Form.Item>
         <Form.Item label="shoeSize">
@@ -671,14 +731,30 @@ class CharacterCard extends Component {
             onChange={this.handleSelectChange}
             disabled={disabledInput}
           >
-            <Option value="N/A" key="N/A"><span name="shoeSize"></span>N/A</Option>
-            <Option value="XS" key="XS"><span name="shoeSize"></span>XS</Option>
-            <Option value="S" key="S"><span name="shoeSize"></span>S</Option>
-            <Option value="M" key="M"><span name="shoeSize"></span>M</Option>
-            <Option value="L" key="L"><span name="shoeSize"></span>L</Option>
-            <Option value="XL" key="XL"><span name="shoeSize"></span>XL</Option>
-            <Option value="XXL" key="XXL"><span name="shoeSize"></span>XXL</Option>
-            <Option value="XXXL" key="XXXL"><span name="shoeSize"></span>XXXL</Option>
+            <Option value="N/A" key="N/A">
+              <span name="shoeSize"></span>N/A
+            </Option>
+            <Option value="XS" key="XS">
+              <span name="shoeSize"></span>XS
+            </Option>
+            <Option value="S" key="S">
+              <span name="shoeSize"></span>S
+            </Option>
+            <Option value="M" key="M">
+              <span name="shoeSize"></span>M
+            </Option>
+            <Option value="L" key="L">
+              <span name="shoeSize"></span>L
+            </Option>
+            <Option value="XL" key="XL">
+              <span name="shoeSize"></span>XL
+            </Option>
+            <Option value="XXL" key="XXL">
+              <span name="shoeSize"></span>XXL
+            </Option>
+            <Option value="XXXL" key="XXXL">
+              <span name="shoeSize"></span>XXXL
+            </Option>
           </Select>
         </Form.Item>
         <Form.Item label="suitSize">
@@ -689,14 +765,30 @@ class CharacterCard extends Component {
             onChange={this.handleSelectChange}
             disabled={disabledInput}
           >
-            <Option value="N/A" key="N/A"><span name="suitSize"></span>N/A</Option>
-            <Option value="XS" key="XS"><span name="suitSize"></span>XS</Option>
-            <Option value="S" key="S"><span name="suitSize"></span>S</Option>
-            <Option value="M" key="M"><span name="suitSize"></span>M</Option>
-            <Option value="L" key="L"><span name="suitSize"></span>L</Option>
-            <Option value="XL" key="XL"><span name="suitSize"></span>XL</Option>
-            <Option value="XXL" key="XXL"><span name="suitSize"></span>XXL</Option>
-            <Option value="XXXL" key="XXXL"><span name="suitSize"></span>XXXL</Option>
+            <Option value="N/A" key="N/A">
+              <span name="suitSize"></span>N/A
+            </Option>
+            <Option value="XS" key="XS">
+              <span name="suitSize"></span>XS
+            </Option>
+            <Option value="S" key="S">
+              <span name="suitSize"></span>S
+            </Option>
+            <Option value="M" key="M">
+              <span name="suitSize"></span>M
+            </Option>
+            <Option value="L" key="L">
+              <span name="suitSize"></span>L
+            </Option>
+            <Option value="XL" key="XL">
+              <span name="suitSize"></span>XL
+            </Option>
+            <Option value="XXL" key="XXL">
+              <span name="suitSize"></span>XXL
+            </Option>
+            <Option value="XXXL" key="XXXL">
+              <span name="suitSize"></span>XXXL
+            </Option>
           </Select>
         </Form.Item>
         <Form.Item label="braSize">
@@ -707,14 +799,30 @@ class CharacterCard extends Component {
             onChange={this.handleSelectChange}
             disabled={disabledInput}
           >
-            <Option value="N/A" key="N/A"><span name="braSize"></span>N/A</Option>
-            <Option value="XS" key="XS"><span name="braSize"></span>XS</Option>
-            <Option value="S" key="S"><span name="braSize"></span>S</Option>
-            <Option value="M" key="M"><span name="braSize"></span>M</Option>
-            <Option value="L" key="L"><span name="braSize"></span>L</Option>
-            <Option value="XL" key="XL"><span name="braSize"></span>XL</Option>
-            <Option value="XXL" key="XXL"><span name="braSize"></span>XXL</Option>
-            <Option value="XXXL" key="XXXL"><span name="braSize"></span>XXXL</Option>
+            <Option value="N/A" key="N/A">
+              <span name="braSize"></span>N/A
+            </Option>
+            <Option value="XS" key="XS">
+              <span name="braSize"></span>XS
+            </Option>
+            <Option value="S" key="S">
+              <span name="braSize"></span>S
+            </Option>
+            <Option value="M" key="M">
+              <span name="braSize"></span>M
+            </Option>
+            <Option value="L" key="L">
+              <span name="braSize"></span>L
+            </Option>
+            <Option value="XL" key="XL">
+              <span name="braSize"></span>XL
+            </Option>
+            <Option value="XXL" key="XXL">
+              <span name="braSize"></span>XXL
+            </Option>
+            <Option value="XXXL" key="XXXL">
+              <span name="braSize"></span>XXXL
+            </Option>
           </Select>
         </Form.Item>
       </Form>

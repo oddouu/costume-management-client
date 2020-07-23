@@ -106,6 +106,15 @@ class UploadImage extends Component {
           })
           .then((response) => {
             console.log("image created", response);
+
+            if (this.props.charId) {
+              instance
+                .put(`/projects/${this.props.projId}/characters/${this.props.charId}/addImage/${response.data._id}`)
+                .then(response => {
+                  console.log("image attached to character",response.data)
+                })
+            }
+
             this.setState({
               name: "",
               file: "",
@@ -124,6 +133,8 @@ class UploadImage extends Component {
     );
 
     const { imageUrl } = this.state;
+    const {staticImageUrl} = this.props
+    console.log("IMAGEURL-UPLOADIMAGE", imageUrl)
     return (
       <Upload
         name="avatar"
@@ -135,8 +146,11 @@ class UploadImage extends Component {
         onChange={this.handleChange}
         withCredentials="true"
       >
-        {imageUrl ? (
-          <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
+        {staticImageUrl ? 
+            imageUrl ? (
+              <img src={imageUrl} alt="avatar" style={{width: "100%"}} />
+            ) : (
+          <img src={staticImageUrl} alt="avatar" style={{ width: "100%" }} />
         ) : (
           uploadButton
         )}
