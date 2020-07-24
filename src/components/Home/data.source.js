@@ -1,4 +1,53 @@
 import React from 'react';
+export const Nav31DataSource = {
+  wrapper: { className: 'header3 home-page-wrapper' },
+  page: { className: 'home-page' },
+  logo: {
+    className: 'header3-logo',
+    children:
+      'https://gw.alipayobjects.com/zos/basement_prod/b30cdc2a-d91c-4c78-be9c-7c63b308d4b3.svg',
+  },
+  Menu: {
+    className: 'header3-menu',
+    children: [
+      {
+        name: 'item0',
+        className: 'header3-item',
+        children: {
+          href: '/',
+          children: [
+            {
+              children: (
+                <span>
+                  <p>Home</p>
+                </span>
+              ),
+              name: 'text',
+            },
+          ],
+        },
+      },
+      {
+        name: 'item1',
+        className: 'header3-item',
+        children: {
+          href: '/logout',
+          children: [
+            {
+              children: (
+                <span>
+                  <p>Logout</p>
+                </span>
+              ),
+              name: 'text',
+            },
+          ],
+        },
+      },
+    ],
+  },
+  mobileMenu: { className: 'header3-mobile-menu' },
+};
 export const Nav30DataSource = {
   wrapper: { className: 'header3 home-page-wrapper' },
   page: { className: 'home-page' },
@@ -12,6 +61,23 @@ export const Nav30DataSource = {
     children: [
       {
         name: 'item0',
+        className: 'header3-item',
+        children: {
+          href: '/',
+          children: [
+            {
+              children: (
+                <span>
+                  <p>Home</p>
+                </span>
+              ),
+              name: 'text',
+            },
+          ],
+        },
+      },
+      {
+        name: 'item1',
         className: 'header3-item',
         children: {
           href: '/login',
@@ -28,7 +94,7 @@ export const Nav30DataSource = {
         },
       },
       {
-        name: 'item1',
+        name: 'item2',
         className: 'header3-item',
         children: {
           href: '/signup',
