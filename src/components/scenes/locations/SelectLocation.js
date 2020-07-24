@@ -134,8 +134,8 @@ class SelectLocation extends Component {
               <div id="left-div-icons">
                 {options.map((eachOption) => {
                   return (
-                    <div>
-                      <Tooltip title="delete location">
+                    <div key={eachOption._id}>
+                      <Tooltip  title="delete location">
                         <Popconfirm
                           title="Are you really sure you want to delete this location?"
                           onConfirm={() => this.handleDelete(eachOption._id)}
@@ -145,9 +145,7 @@ class SelectLocation extends Component {
                         >
                           <Button
                             danger
-                            ghost
                             type="link"
-                            key={eachOption._id}
                             onClick={(e) => e.preventDefault()}
                             style={{ padding: "5px 12px" }}
                           >

@@ -234,6 +234,19 @@ class SceneList extends Component {
       title: "intExt",
       dataIndex: "intExt",
       editable: true,
+      filters: [
+        {
+          text: "INT",
+          value: "INT",
+        },
+        {
+          text: "EXT",
+          value: "EXT",
+        },
+      ],
+      onFilter: (value, record) => record.intExt.indexOf(value) === 0,
+      sorter: (a, b) => a.intExt.length - b.intExt.length,
+      sortDirections: ["descend"],
     },
     {
       title: "description",
@@ -268,6 +281,7 @@ class SceneList extends Component {
           scene={record}
           characters={this.state.characters}
           refreshScenes={this.getAllScenes}
+          key={record._id}
         />
       ),
     },
@@ -288,9 +302,7 @@ class SceneList extends Component {
     },
   ];
 
-
   getAllScenes = () => {
-
     const { params } = this.props.match;
     instance
       .get(`/projects/${params.projId}/scenes`)
@@ -303,6 +315,7 @@ class SceneList extends Component {
           response.data.length = 0;
         }
 
+        console.log("ALL SCENES", response.data)
         this.setState({
           scenes: response.data,
           count: response.data.length,
@@ -369,6 +382,10 @@ class SceneList extends Component {
     }
   }
 
+  onChange = (pagination, filters, sorter, extra) => {
+    console.log("CHANGE", pagination, filters, sorter, extra);
+  };
+
   render() {
     const { params } = this.props.match;
     const { scenes } = this.state;
@@ -415,6 +432,7 @@ class SceneList extends Component {
           bordered
           dataSource={scenes}
           columns={columns}
+          onChange={this.onChange}
         />
       </div>
     );

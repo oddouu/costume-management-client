@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Upload, Modal } from "antd";
+import { Upload, Modal, Popconfirm } from "antd";
 import { PlusOutlined, FileDoneOutlined } from "@ant-design/icons";
 import instance from "../../instance";
 
@@ -159,6 +159,7 @@ handleDeleteImage = (item) => {
         <div className="ant-upload-text">Upload</div>
       </div>
     );
+
     return (
       <div className="clearfix">
         <Upload
@@ -169,6 +170,8 @@ handleDeleteImage = (item) => {
           onChange={this.handleChange}
           isImgUrl="true"
           onRemove={this.handleDeleteImage}
+
+          
         >
           {uploadButton}
         </Upload>

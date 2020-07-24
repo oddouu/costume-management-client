@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./App.css";
+// import "./App.css";
 
 import { Switch, Route, Redirect } from "react-router-dom";
 
@@ -17,6 +17,7 @@ import SceneList from "./components/scenes/SceneList";
 import CostumeList from "./components/costumes/CostumeList";
 import CostumeDetail from "./components/costumes/CostumeDetail";
 
+import Home from "./components/Home/index.jsx";
 const { Footer, Content } = Layout;
 
 class App extends Component {
@@ -64,6 +65,13 @@ class App extends Component {
           <Switch>
             {/* Passing props using render method inside the Route component */}
 
+            <Route
+              exact
+              path="/"
+              render={(props) => (
+                <Home setCurrentUser={this.setCurrentUser} {...props} />
+              )}
+            />
             <Route
               path="/login"
               render={(props) => (
