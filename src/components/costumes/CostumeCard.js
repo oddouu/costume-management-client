@@ -202,13 +202,12 @@ class CostumeCard extends Component {
         key: "info",
         tab: "info",
       },
-      {
-        key: "scenes",
-        tab: "scenes",
-      },
+      // {
+      //   key: "scenes",
+      //   tab: "scenes",
+      // },
     ];
 
-    const scene = <div></div>;
 
 
  
@@ -229,31 +228,36 @@ class CostumeCard extends Component {
               marginRight: "auto",
               marginLeft: "auto",
               objectFit: "cover",
-              width: "100%"
+              width: "100%",
             }}
             alt="example"
-            src={images[0] ? images[0].imageUrl : "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"}
+            src={
+              images[0]
+                ? images[0].imageUrl
+                : "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+            }
           />
         </Link>
-
-        <Form>
-          <Form.Item label="costumeNumber">
-            <Input
-              value={costumeNumber}
-              name="costumeNumber"
-              onChange={this.handleChange}
-              disabled={disabledInput}
-            />
-          </Form.Item>
-          <Form.Item label="description">
-            <Input
-              value={description}
-              name="description"
-              onChange={this.handleChange}
-              disabled={disabledInput}
-            />
-          </Form.Item>
-        </Form>
+        <div className="form-parent">
+          <Form style={{ marginTop: "20px" }} className="card-form">
+            <Form.Item label="costumeNumber">
+              <Input
+                value={costumeNumber}
+                name="costumeNumber"
+                onChange={this.handleChange}
+                disabled={disabledInput}
+              />
+            </Form.Item>
+            <Form.Item label="description">
+              <Input
+                value={description}
+                name="description"
+                onChange={this.handleChange}
+                disabled={disabledInput}
+              />
+            </Form.Item>
+          </Form>
+        </div>
         <Descriptions>
           <Descriptions.Item label="appears in scenes">
             <SelectScene

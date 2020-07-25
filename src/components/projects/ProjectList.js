@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import NewProject from "./NewProject";
 import instance from "../../instance";
 
-import Link from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
-import { Layout, List } from "antd";
+import { Layout, List, Breadcrumb } from "antd";
 import ProjectCard from "./ProjectCard";
 
 const { Content } = Layout;
@@ -29,16 +29,21 @@ class ProjectList extends Component {
   }
 
   render() {
+
     return (
-      <div >
+      <div
+        style={{
+          margin: "2rem 5rem 5rem 5rem",
+          padding: "2rem 5rem 5rem 5rem",
+          width: "100%"
+        }}
+      >
         <Content key="new-project-button">
           <NewProject
             history={this.props.history}
             key="new-project"
             refreshProjects={this.getAllProjects}
-          >
-            Create new project
-          </NewProject>
+          />
         </Content>
         <List
           grid={{
@@ -46,19 +51,22 @@ class ProjectList extends Component {
             xs: 1,
             sm: 2,
             md: 2,
-            lg:3,
+            lg: 3,
             xl: 3,
             xxl: 3,
           }}
           dataSource={this.state.projects}
-          renderItem={project => (
+          renderItem={(project) => (
             <List.Item>
-              <ProjectCard key={project._id + "Card"} project={{ ...project }} refreshProjects={this.getAllProjects} history={this.props.history} />
+              <ProjectCard
+                key={project._id + "Card"}
+                project={{ ...project }}
+                refreshProjects={this.getAllProjects}
+                history={this.props.history}
+              />
             </List.Item>
           )}
         />
-
-
 
         {/* <Row style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }} >
           {this.state.projects.map((project) => {

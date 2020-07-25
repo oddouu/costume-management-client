@@ -469,7 +469,10 @@ class CharacterCard extends Component {
 
     const overview = (
       <div>
-        <UploadImage staticImageUrl={imageUrl} projId={project} charId={charId} />
+      <div className="image-wrapper">
+
+        <UploadImage  staticImageUrl={imageUrl} projId={project} charId={charId} />
+      </div>
         {/* <a
           href={`/projects/${_id}`}
           style={{
@@ -489,7 +492,11 @@ class CharacterCard extends Component {
             src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
           />
         </a> */}
-        <Form style={{ marginTop: "20px" }}>
+
+        <div className="form-parent">
+
+        
+        <Form style={{ marginTop: "20px" }} className="card-form">
           <Form.Item label="actorName">
             <Input
               value={actorName}
@@ -525,307 +532,310 @@ class CharacterCard extends Component {
             />
           </Form.Item>
         </Form>
+        </div>
       </div>
     );
 
     const measures = (
-      <Form name="control-ref">
-        <Form.Item label="unitMeasure">
-          <Select
-            // labelInValue
-            value={unitMeasure}
-            onSelect={this.handleSelectChange}
-            name="unitMeasure"
-            disabled={disabledInput}
-          >
-            <Option value="cm" key="cm">
-              <span name="unitMeasure"></span>cm
-            </Option>
-            <Option value="in" key="in">
-              <span name="unitMeasure"></span>in
-            </Option>
-          </Select>
-        </Form.Item>
+      <div className="form-parent">
+        <Form name="control-ref" className="card-form">
+          <Form.Item label="unitMeasure">
+            <Select
+              // labelInValue
+              value={unitMeasure}
+              onSelect={this.handleSelectChange}
+              name="unitMeasure"
+              disabled={disabledInput}
+            >
+              <Option value="cm" key="cm">
+                <span name="unitMeasure"></span>cm
+              </Option>
+              <Option value="in" key="in">
+                <span name="unitMeasure"></span>in
+              </Option>
+            </Select>
+          </Form.Item>
 
-        <Form.Item label="heightMeasures">
-          <Input
-            value={heightMeasures}
-            name="heightMeasures"
-            type="number"
-            onChange={this.handleChange}
-            disabled={disabledInput}
-          />
-          <span>{this.state.unitMeasure}</span>
-        </Form.Item>
-        <Form.Item label="shouldersMeasures">
-          <Input
-            value={shouldersMeasures}
-            name="shouldersMeasures"
-            type="number"
-            onChange={this.handleChange}
-            disabled={disabledInput}
-          />
-          <span>{this.state.unitMeasure}</span>
-        </Form.Item>
-        <Form.Item label="chestMeasures">
-          <Input
-            value={chestMeasures}
-            name="chestMeasures"
-            type="number"
-            onChange={this.handleChange}
-            disabled={disabledInput}
-          />
-          <span>{this.state.unitMeasure}</span>
-        </Form.Item>
+          <Form.Item label="heightMeasures">
+            <Input
+              value={heightMeasures}
+              name="heightMeasures"
+              type="number"
+              onChange={this.handleChange}
+              disabled={disabledInput}
+            />
+            <span>{this.state.unitMeasure}</span>
+          </Form.Item>
+          <Form.Item label="shouldersMeasures">
+            <Input
+              value={shouldersMeasures}
+              name="shouldersMeasures"
+              type="number"
+              onChange={this.handleChange}
+              disabled={disabledInput}
+            />
+            <span>{this.state.unitMeasure}</span>
+          </Form.Item>
+          <Form.Item label="chestMeasures">
+            <Input
+              value={chestMeasures}
+              name="chestMeasures"
+              type="number"
+              onChange={this.handleChange}
+              disabled={disabledInput}
+            />
+            <span>{this.state.unitMeasure}</span>
+          </Form.Item>
 
-        <Form.Item label="waistMeasures">
-          <Input
-            value={waistMeasures}
-            name="waistMeasures"
-            type="number"
-            onChange={this.handleChange}
-            disabled={disabledInput}
-          />
-          <span>{this.state.unitMeasure}</span>
-        </Form.Item>
-        <Form.Item label="hipsMeasures">
-          <Input
-            value={hipsMeasures}
-            name="hipsMeasures"
-            type="number"
-            onChange={this.handleChange}
-            disabled={disabledInput}
-          />
-          <span>{this.state.unitMeasure}</span>
-        </Form.Item>
-        <Form.Item label="armMeasures">
-          <Input
-            value={armMeasures}
-            name="armMeasures"
-            type="number"
-            onChange={this.handleChange}
-            disabled={disabledInput}
-          />
-          <span>{this.state.unitMeasure}</span>
-        </Form.Item>
-        <Form.Item label="legMeasures">
-          <Input
-            value={legMeasures}
-            name="legMeasures"
-            type="number"
-            onChange={this.handleChange}
-            disabled={disabledInput}
-          />
-          <span>{this.state.unitMeasure}</span>
-        </Form.Item>
+          <Form.Item label="waistMeasures">
+            <Input
+              value={waistMeasures}
+              name="waistMeasures"
+              type="number"
+              onChange={this.handleChange}
+              disabled={disabledInput}
+            />
+            <span>{this.state.unitMeasure}</span>
+          </Form.Item>
+          <Form.Item label="hipsMeasures">
+            <Input
+              value={hipsMeasures}
+              name="hipsMeasures"
+              type="number"
+              onChange={this.handleChange}
+              disabled={disabledInput}
+            />
+            <span>{this.state.unitMeasure}</span>
+          </Form.Item>
+          <Form.Item label="armMeasures">
+            <Input
+              value={armMeasures}
+              name="armMeasures"
+              type="number"
+              onChange={this.handleChange}
+              disabled={disabledInput}
+            />
+            <span>{this.state.unitMeasure}</span>
+          </Form.Item>
+          <Form.Item label="legMeasures">
+            <Input
+              value={legMeasures}
+              name="legMeasures"
+              type="number"
+              onChange={this.handleChange}
+              disabled={disabledInput}
+            />
+            <span>{this.state.unitMeasure}</span>
+          </Form.Item>
 
-        {/* THESE ARE SELECTS */}
+          {/* THESE ARE SELECTS */}
 
-        <Form.Item label="shirtSize">
-          <Select
-            value={shirtSize}
-            name="shirtSize"
-            key="shirtSize"
-            onChange={this.handleSelectChange}
-            disabled={disabledInput}
-          >
-            <Option value="N/A" key="N/A">
-              <span name="shirtSize"></span>N/A
-            </Option>
-            <Option value="XS" key="XS">
-              <span name="shirtSize"></span>XS
-            </Option>
-            <Option value="S" key="S">
-              <span name="shirtSize"></span>S
-            </Option>
-            <Option value="M" key="M">
-              <span name="shirtSize"></span>M
-            </Option>
-            <Option value="L" key="L">
-              <span name="shirtSize"></span>L
-            </Option>
-            <Option value="XL" key="XL">
-              <span name="shirtSize"></span>XL
-            </Option>
-            <Option value="XXL" key="XXL">
-              <span name="shirtSize"></span>XXL
-            </Option>
-            <Option value="XXXL" key="XXXL">
-              <span name="shirtSize"></span>XXXL
-            </Option>
-          </Select>
-        </Form.Item>
-        <Form.Item label="coatSize">
-          <Select
-            value={coatSize}
-            name="coatSize"
-            key="coatSize"
-            onChange={this.handleSelectChange}
-            disabled={disabledInput}
-          >
-            <Option value="N/A" key="N/A">
-              <span name="coatSize"></span>N/A
-            </Option>
-            <Option value="XS" key="XS">
-              <span name="coatSize"></span>XS
-            </Option>
-            <Option value="S" key="S">
-              <span name="coatSize"></span>S
-            </Option>
-            <Option value="M" key="M">
-              <span name="coatSize"></span>M
-            </Option>
-            <Option value="L" key="L">
-              <span name="coatSize"></span>L
-            </Option>
-            <Option value="XL" key="XL">
-              <span name="coatSize"></span>XL
-            </Option>
-            <Option value="XXL" key="XXL">
-              <span name="coatSize"></span>XXL
-            </Option>
-            <Option value="XXXL" key="XXXL">
-              <span name="coatSize"></span>XXXL
-            </Option>
-          </Select>
-        </Form.Item>
-        <Form.Item label="trousersSize">
-          <Select
-            value={trousersSize}
-            name="trousersSize"
-            key="trousersSize"
-            onChange={this.handleSelectChange}
-            disabled={disabledInput}
-          >
-            <Option value="N/A" key="N/A">
-              <span name="trousersSize"></span>N/A
-            </Option>
-            <Option value="XS" key="XS">
-              <span name="trousersSize"></span>XS
-            </Option>
-            <Option value="S" key="S">
-              <span name="trousersSize"></span>S
-            </Option>
-            <Option value="M" key="M">
-              <span name="trousersSize"></span>M
-            </Option>
-            <Option value="L" key="L">
-              <span name="trousersSize"></span>L
-            </Option>
-            <Option value="XL" key="XL">
-              <span name="trousersSize"></span>XL
-            </Option>
-            <Option value="XXL" key="XXL">
-              <span name="trousersSize"></span>XXL
-            </Option>
-            <Option value="XXXL" key="XXXL">
-              <span name="trousersSize"></span>XXXL
-            </Option>
-          </Select>
-        </Form.Item>
-        <Form.Item label="shoeSize">
-          <Select
-            value={shoeSize}
-            name="shoeSize"
-            key="shoeSize"
-            onChange={this.handleSelectChange}
-            disabled={disabledInput}
-          >
-            <Option value="N/A" key="N/A">
-              <span name="shoeSize"></span>N/A
-            </Option>
-            <Option value="XS" key="XS">
-              <span name="shoeSize"></span>XS
-            </Option>
-            <Option value="S" key="S">
-              <span name="shoeSize"></span>S
-            </Option>
-            <Option value="M" key="M">
-              <span name="shoeSize"></span>M
-            </Option>
-            <Option value="L" key="L">
-              <span name="shoeSize"></span>L
-            </Option>
-            <Option value="XL" key="XL">
-              <span name="shoeSize"></span>XL
-            </Option>
-            <Option value="XXL" key="XXL">
-              <span name="shoeSize"></span>XXL
-            </Option>
-            <Option value="XXXL" key="XXXL">
-              <span name="shoeSize"></span>XXXL
-            </Option>
-          </Select>
-        </Form.Item>
-        <Form.Item label="suitSize">
-          <Select
-            value={suitSize}
-            name="suitSize"
-            key="suitSize"
-            onChange={this.handleSelectChange}
-            disabled={disabledInput}
-          >
-            <Option value="N/A" key="N/A">
-              <span name="suitSize"></span>N/A
-            </Option>
-            <Option value="XS" key="XS">
-              <span name="suitSize"></span>XS
-            </Option>
-            <Option value="S" key="S">
-              <span name="suitSize"></span>S
-            </Option>
-            <Option value="M" key="M">
-              <span name="suitSize"></span>M
-            </Option>
-            <Option value="L" key="L">
-              <span name="suitSize"></span>L
-            </Option>
-            <Option value="XL" key="XL">
-              <span name="suitSize"></span>XL
-            </Option>
-            <Option value="XXL" key="XXL">
-              <span name="suitSize"></span>XXL
-            </Option>
-            <Option value="XXXL" key="XXXL">
-              <span name="suitSize"></span>XXXL
-            </Option>
-          </Select>
-        </Form.Item>
-        <Form.Item label="braSize">
-          <Select
-            value={braSize}
-            name="braSize"
-            key="braSize"
-            onChange={this.handleSelectChange}
-            disabled={disabledInput}
-          >
-            <Option value="N/A" key="N/A">
-              <span name="braSize"></span>N/A
-            </Option>
-            <Option value="XS" key="XS">
-              <span name="braSize"></span>XS
-            </Option>
-            <Option value="S" key="S">
-              <span name="braSize"></span>S
-            </Option>
-            <Option value="M" key="M">
-              <span name="braSize"></span>M
-            </Option>
-            <Option value="L" key="L">
-              <span name="braSize"></span>L
-            </Option>
-            <Option value="XL" key="XL">
-              <span name="braSize"></span>XL
-            </Option>
-            <Option value="XXL" key="XXL">
-              <span name="braSize"></span>XXL
-            </Option>
-            <Option value="XXXL" key="XXXL">
-              <span name="braSize"></span>XXXL
-            </Option>
-          </Select>
-        </Form.Item>
-      </Form>
+          <Form.Item label="shirtSize">
+            <Select
+              value={shirtSize}
+              name="shirtSize"
+              key="shirtSize"
+              onChange={this.handleSelectChange}
+              disabled={disabledInput}
+            >
+              <Option value="N/A" key="N/A">
+                <span name="shirtSize"></span>N/A
+              </Option>
+              <Option value="XS" key="XS">
+                <span name="shirtSize"></span>XS
+              </Option>
+              <Option value="S" key="S">
+                <span name="shirtSize"></span>S
+              </Option>
+              <Option value="M" key="M">
+                <span name="shirtSize"></span>M
+              </Option>
+              <Option value="L" key="L">
+                <span name="shirtSize"></span>L
+              </Option>
+              <Option value="XL" key="XL">
+                <span name="shirtSize"></span>XL
+              </Option>
+              <Option value="XXL" key="XXL">
+                <span name="shirtSize"></span>XXL
+              </Option>
+              <Option value="XXXL" key="XXXL">
+                <span name="shirtSize"></span>XXXL
+              </Option>
+            </Select>
+          </Form.Item>
+          <Form.Item label="coatSize">
+            <Select
+              value={coatSize}
+              name="coatSize"
+              key="coatSize"
+              onChange={this.handleSelectChange}
+              disabled={disabledInput}
+            >
+              <Option value="N/A" key="N/A">
+                <span name="coatSize"></span>N/A
+              </Option>
+              <Option value="XS" key="XS">
+                <span name="coatSize"></span>XS
+              </Option>
+              <Option value="S" key="S">
+                <span name="coatSize"></span>S
+              </Option>
+              <Option value="M" key="M">
+                <span name="coatSize"></span>M
+              </Option>
+              <Option value="L" key="L">
+                <span name="coatSize"></span>L
+              </Option>
+              <Option value="XL" key="XL">
+                <span name="coatSize"></span>XL
+              </Option>
+              <Option value="XXL" key="XXL">
+                <span name="coatSize"></span>XXL
+              </Option>
+              <Option value="XXXL" key="XXXL">
+                <span name="coatSize"></span>XXXL
+              </Option>
+            </Select>
+          </Form.Item>
+          <Form.Item label="trousersSize">
+            <Select
+              value={trousersSize}
+              name="trousersSize"
+              key="trousersSize"
+              onChange={this.handleSelectChange}
+              disabled={disabledInput}
+            >
+              <Option value="N/A" key="N/A">
+                <span name="trousersSize"></span>N/A
+              </Option>
+              <Option value="XS" key="XS">
+                <span name="trousersSize"></span>XS
+              </Option>
+              <Option value="S" key="S">
+                <span name="trousersSize"></span>S
+              </Option>
+              <Option value="M" key="M">
+                <span name="trousersSize"></span>M
+              </Option>
+              <Option value="L" key="L">
+                <span name="trousersSize"></span>L
+              </Option>
+              <Option value="XL" key="XL">
+                <span name="trousersSize"></span>XL
+              </Option>
+              <Option value="XXL" key="XXL">
+                <span name="trousersSize"></span>XXL
+              </Option>
+              <Option value="XXXL" key="XXXL">
+                <span name="trousersSize"></span>XXXL
+              </Option>
+            </Select>
+          </Form.Item>
+          <Form.Item label="shoeSize">
+            <Select
+              value={shoeSize}
+              name="shoeSize"
+              key="shoeSize"
+              onChange={this.handleSelectChange}
+              disabled={disabledInput}
+            >
+              <Option value="N/A" key="N/A">
+                <span name="shoeSize"></span>N/A
+              </Option>
+              <Option value="XS" key="XS">
+                <span name="shoeSize"></span>XS
+              </Option>
+              <Option value="S" key="S">
+                <span name="shoeSize"></span>S
+              </Option>
+              <Option value="M" key="M">
+                <span name="shoeSize"></span>M
+              </Option>
+              <Option value="L" key="L">
+                <span name="shoeSize"></span>L
+              </Option>
+              <Option value="XL" key="XL">
+                <span name="shoeSize"></span>XL
+              </Option>
+              <Option value="XXL" key="XXL">
+                <span name="shoeSize"></span>XXL
+              </Option>
+              <Option value="XXXL" key="XXXL">
+                <span name="shoeSize"></span>XXXL
+              </Option>
+            </Select>
+          </Form.Item>
+          <Form.Item label="suitSize">
+            <Select
+              value={suitSize}
+              name="suitSize"
+              key="suitSize"
+              onChange={this.handleSelectChange}
+              disabled={disabledInput}
+            >
+              <Option value="N/A" key="N/A">
+                <span name="suitSize"></span>N/A
+              </Option>
+              <Option value="XS" key="XS">
+                <span name="suitSize"></span>XS
+              </Option>
+              <Option value="S" key="S">
+                <span name="suitSize"></span>S
+              </Option>
+              <Option value="M" key="M">
+                <span name="suitSize"></span>M
+              </Option>
+              <Option value="L" key="L">
+                <span name="suitSize"></span>L
+              </Option>
+              <Option value="XL" key="XL">
+                <span name="suitSize"></span>XL
+              </Option>
+              <Option value="XXL" key="XXL">
+                <span name="suitSize"></span>XXL
+              </Option>
+              <Option value="XXXL" key="XXXL">
+                <span name="suitSize"></span>XXXL
+              </Option>
+            </Select>
+          </Form.Item>
+          <Form.Item label="braSize">
+            <Select
+              value={braSize}
+              name="braSize"
+              key="braSize"
+              onChange={this.handleSelectChange}
+              disabled={disabledInput}
+            >
+              <Option value="N/A" key="N/A">
+                <span name="braSize"></span>N/A
+              </Option>
+              <Option value="XS" key="XS">
+                <span name="braSize"></span>XS
+              </Option>
+              <Option value="S" key="S">
+                <span name="braSize"></span>S
+              </Option>
+              <Option value="M" key="M">
+                <span name="braSize"></span>M
+              </Option>
+              <Option value="L" key="L">
+                <span name="braSize"></span>L
+              </Option>
+              <Option value="XL" key="XL">
+                <span name="braSize"></span>XL
+              </Option>
+              <Option value="XXL" key="XXL">
+                <span name="braSize"></span>XXL
+              </Option>
+              <Option value="XXXL" key="XXXL">
+                <span name="braSize"></span>XXXL
+              </Option>
+            </Select>
+          </Form.Item>
+        </Form>
+      </div>
     );
 
     const contentList = {
@@ -833,10 +843,10 @@ class CharacterCard extends Component {
       tab2: measures,
     };
     return (
-      <div>
+      <div style={{ width: "512px", maxWidth: "512px", marginBottom: "20px" }}>
         <Card
           hoverable
-          style={{ width: 300, margin: 30 }}
+          
           tabList={this.tabList}
           activeTabKey={this.state.key}
           onTabChange={(key) => {

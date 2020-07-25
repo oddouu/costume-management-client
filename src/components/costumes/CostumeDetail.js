@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import { Upload, Modal, Popconfirm } from "antd";
+import { Upload, Modal, Popconfirm, Button } from "antd";
 import { PlusOutlined, FileDoneOutlined } from "@ant-design/icons";
 import instance from "../../instance";
+import { Link } from "react-router-dom";
+import "./CostumeDetail.less"
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -161,7 +163,18 @@ handleDeleteImage = (item) => {
     );
 
     return (
-      <div className="clearfix">
+      <div
+        className="clearfix"
+        style={{
+          height: "90vh",
+          margin: "2rem 5rem 5rem 5rem",
+          padding: "2rem 5rem 5rem 5rem",
+          width: "100%",
+        }}
+      >
+        <Link to="/projects">
+          <Button style={{ marginBottom: "20px" }}>Go back to projects</Button>
+        </Link>
         <Upload
           customRequest={this.dummyRequest}
           listType="picture-card"
@@ -170,8 +183,6 @@ handleDeleteImage = (item) => {
           onChange={this.handleChange}
           isImgUrl="true"
           onRemove={this.handleDeleteImage}
-
-          
         >
           {uploadButton}
         </Upload>

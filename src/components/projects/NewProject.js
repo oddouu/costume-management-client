@@ -132,7 +132,11 @@ class NewProject extends Component {
 
     return (
       <div>
-        <Button type="primary" onClick={this.showModal}>
+        <Button
+          type="primary"
+          onClick={this.showModal}
+          style={{ marginBottom: "2rem" }}
+        >
           Create new Project
         </Button>
         <Modal

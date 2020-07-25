@@ -1,16 +1,22 @@
 import React, { Component } from "react";
-// import "./App.css";
+import "./App.less";
 
-import { Switch, Route, Redirect } from "react-router-dom";
+import {
+  HashRouter as Router,
+  Route,
+  Switch,
+  Link,
+  withRouter,
+  Redirect,
+} from "react-router-dom";
 
 import ProjectList from "./components/projects/ProjectList";
-import NavBar from "./components/navbar/index";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
-import Logout from "./components/auth/Logout"
+import Logout from "./components/auth/Logout";
 import AuthService from "./components/auth/auth-service";
 
-import { Layout, message } from "antd";
+import { Layout, message, Breadcrumb } from "antd";
 import CharacterList from "./components/characters/CharacterList";
 import SceneList from "./components/scenes/SceneList";
 
@@ -56,8 +62,6 @@ class App extends Component {
     });
   };
 
-  
-
   componentDidMount() {
     this.fetchUser();
     // 适配手机屏幕;
@@ -95,6 +99,28 @@ class App extends Component {
   };
 
   render() {
+    // const location = this.props.location;
+    // console.log("LOCATION", location);
+    // const pathSnippets = location.pathname.split("/").filter((i) => i);
+    // console.log("PATHSNIPPETS", pathSnippets);
+    // const extraBreadcrumbItems = pathSnippets.map((_, index) => {
+    //   const url = `/${pathSnippets.slice(0, index + 1).join("/")}`;
+    //   return (
+    //     <Breadcrumb.Item key={url}>
+    //       <Link to={url}>{breadcrumbNameMap[url]}</Link>
+    //     </Breadcrumb.Item>
+    //   );
+    // });
+    // console.log("EXTRABREADCRUMBITEMS", extraBreadcrumbItems)
+
+    // const breadcrumbItems = [
+    //   <Breadcrumb.Item key="home">
+    //     <Link to="/">Home</Link>
+    //   </Breadcrumb.Item>,
+    // ];
+    // // .concat(extraBreadcrumbItems);
+    // console.log("BREADCRUMBITEMS", breadcrumbItems);
+
     const children = [
       <Nav3
         id="Nav3_0"
@@ -102,21 +128,35 @@ class App extends Component {
         dataSource={this.state.currentUser ? Nav31DataSource : Nav30DataSource}
         isMobile={this.state.isMobile}
       />,
-      <Switch>
+
+      <Switch key="switch">
         {/* Passing props using render method inside the Route component */}
         <Route
           exact
           path="/"
           render={(props) => (
-            <Home setCurrentUser={this.setCurrentUser} {...props} />
+            <Home
+              key="home"
+              id="home"
+              setCurrentUser={this.setCurrentUser}
+              {...props}
+            />
           )}
         />
         <Route
           path="/login"
           render={(props) => (
             <div>
-              <Home setCurrentUser={this.setCurrentUser} {...props} />
-              <Login setCurrentUser={this.setCurrentUser} {...props} />
+              <Home
+                key="home2"
+                setCurrentUser={this.setCurrentUser}
+                {...props}
+              />
+              <Login
+                key="login"
+                setCurrentUser={this.setCurrentUser}
+                {...props}
+              />
             </div>
           )}
         />
@@ -124,7 +164,14 @@ class App extends Component {
           path="/logout"
           render={(props) => {
             if (localStorage.getItem("loggedin")) {
-              return <Logout setCurrentUser={this.setCurrentUser} {...props} />
+              return (
+                <Logout
+                  key="logout"
+                  id="logout"
+                  setCurrentUser={this.setCurrentUser}
+                  {...props}
+                />
+              );
             } else {
               return <Redirect to="/login" />;
             }
@@ -135,7 +182,9 @@ class App extends Component {
           path="/projects"
           render={(props) => {
             if (localStorage.getItem("loggedin")) {
-              return <ProjectList {...props} />;
+              return (
+                <ProjectList id="project-list" key="project-list" {...props} />
+              );
             } else {
               return <Redirect to="/login" />;
             }
@@ -148,6 +197,8 @@ class App extends Component {
             if (localStorage.getItem("loggedin")) {
               return (
                 <CharacterList
+                  key="character-list"
+                  id="character-list"
                   currentUser={this.state.currentUser}
                   {...props}
                 />
@@ -163,7 +214,12 @@ class App extends Component {
           render={(props) => {
             if (localStorage.getItem("loggedin")) {
               return (
-                <SceneList currentUser={this.state.currentUser} {...props} />
+                <SceneList
+                  key="scene-list"
+                  id="scene-list"
+                  currentUser={this.state.currentUser}
+                  {...props}
+                />
               );
             } else {
               return <Redirect to="/login" />;
@@ -176,7 +232,12 @@ class App extends Component {
           render={(props) => {
             if (localStorage.getItem("loggedin")) {
               return (
-                <CostumeList currentUser={this.state.currentUser} {...props} />
+                <CostumeList
+                  key="costume-list"
+                  id="costume-list"
+                  currentUser={this.state.currentUser}
+                  {...props}
+                />
               );
             } else {
               return <Redirect to="/login" />;
@@ -191,6 +252,8 @@ class App extends Component {
             if (localStorage.getItem("loggedin")) {
               return (
                 <CostumeDetail
+                  key="costume-detail"
+                  id="costume-detail"
                   currentUser={this.state.currentUser}
                   {...props}
                 />
@@ -204,7 +267,12 @@ class App extends Component {
         <Route
           path="/signup"
           render={(props) => (
-            <Signup setCurrentUser={this.setCurrentUser} {...props} />
+            <Signup
+              key="signup"
+              id="signup"
+              setCurrentUser={this.setCurrentUser}
+              {...props}
+            />
           )}
         />
       </Switch>,
@@ -222,6 +290,10 @@ class App extends Component {
           this.dom = d;
         }}
       >
+        {/* {this.props.currentUser ? (
+          <Breadcrumb>{breadcrumbItems}</Breadcrumb>
+        ) : null} */}
+
         {/* 如果不是 dva 2.0 替换成 {children} start */}
         {this.state.show && children}
         {/* 如果不是 dva 2.0 替换成 {children} end */}
@@ -230,4 +302,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(App);

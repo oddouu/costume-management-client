@@ -10,6 +10,8 @@ import {
   Tooltip,
 } from "antd";
 
+import "../Card.less";
+
 import instance from "../../instance";
 import {
   EditOutlined,
@@ -174,21 +176,21 @@ class ProjectCard extends Component {
       </Menu>
     );
     return (
-      <div>
+      <div style={{ width: "100%" }}>
         <Card
           hoverable
-          style={{ width: 300 }}
-          cover={
-            <img
-              style={{
-                marginRight: "auto",
-                marginLeft: "auto",
-                objectFit: "cover",
-              }}
-              alt="example"
-              src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-            />
-          }
+          className="card-class"
+          // cover={
+          //   <img
+          //     style={{
+          //       marginRight: "auto",
+          //       marginLeft: "auto",
+          //       objectFit: "cover",
+          //     }}
+          //     alt="example"
+          //     src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+          //   />
+          // }
           actions={[
             <Dropdown overlay={menu} placement="bottomCenter">
               <EllipsisOutlined
@@ -233,7 +235,10 @@ class ProjectCard extends Component {
             </Tooltip>,
           ]}
         >
-          <Form>
+        <div className="form-parent">
+
+        
+          <Form className="card-form">
             <Form.Item label="Title">
               <Input
                 value={title}
@@ -288,6 +293,7 @@ class ProjectCard extends Component {
             </Form.Item>
             <Form.Item label="Number of Scenes">{numberOfScenes}</Form.Item>
           </Form>
+          </div>
         </Card>
       </div>
     );

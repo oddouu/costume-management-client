@@ -7,6 +7,8 @@ import BannerAnim, { Element } from 'rc-banner-anim';
 import { isImg } from './utils';
 import 'rc-banner-anim/assets/index.css';
 
+import {SkinOutlined} from "@ant-design/icons";
+
 const { BgElement } = Element;
 class Banner extends React.PureComponent {
   render() {
@@ -23,17 +25,19 @@ class Banner extends React.PureComponent {
         <Element key={i.toString()} {...elem} prefixCls={elemClassName}>
           <BgElement key="bg" {...bg} />
           <QueueAnim
-            type={['bottom', 'top']}
+            type={["bottom", "top"]}
             delay={200}
             key="text"
             {...textWrapper}
           >
             <div key="logo" {...title}>
-              {typeof title.children === 'string' &&
+              {typeof title.children === "string" &&
               title.children.match(isImg) ? (
                 <img src={title.children} width="100%" alt="img" />
               ) : (
-                title.children
+                <span style={{ fontSize: 50 }}>
+                  <SkinOutlined /> <span> Continuator</span>
+                </span>
               )}
             </div>
             <div key="content" {...content}>

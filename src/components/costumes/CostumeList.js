@@ -28,46 +28,51 @@ class CharacterList extends Component {
     render() {
         const { params } = this.props.match;
         return (
-            <div>
-                <Content key="new-costume-button">
-                    <NewCostume
-                        history={this.props.history}
-                        key="new-costume"
-                        refreshCostumes={this.getAllCostumes}
-                        projId={params.projId}
-                        charId={params.charId}
-                    >
-                        Create new Costume
-          </NewCostume>
-                    <Link to="/projects">
-                        <Button>Go back to projects</Button>
-                    </Link>
-                </Content>
-                <List
-                    grid={{
-                        gutter: 16,
-                        xs: 1,
-                        sm: 2,
-                        md: 2,
-                        lg: 3,
-                        xl: 3,
-                        xxl: 3,
-                    }}
-                    dataSource={this.state.costumes}
-                    renderItem={(costume) => (
-                        <List.Item>
-                            <CostumeCard
-                                key={costume._id + "Card"}
-                                costume={{ ...costume }}
-                                projId={params.projId}
-                                charId={params.charId}
-                                refreshCostumes={this.getAllCostumes}
-                                history={this.props.history}
-                            />
-                        </List.Item>
-                    )}
-                />
-            </div>
+          <div
+            style={{
+              margin: "2rem 5rem 5rem 5rem",
+              padding: "2rem 5rem 5rem 5rem",
+              width: "100%",
+            }}
+          >
+            <Content key="new-costume-button" style={{marginBottom: "20px"}}>
+              <NewCostume
+                history={this.props.history}
+                key="new-costume"
+                refreshCostumes={this.getAllCostumes}
+                projId={params.projId}
+                charId={params.charId}
+              />
+               
+              <Link to="/projects">
+                <Button>Go back to projects</Button>
+              </Link>
+            </Content>
+            <List
+              grid={{
+                gutter: 16,
+                xs: 1,
+                sm: 2,
+                md: 2,
+                lg: 3,
+                xl: 3,
+                xxl: 3,
+              }}
+              dataSource={this.state.costumes}
+              renderItem={(costume) => (
+                <List.Item>
+                  <CostumeCard
+                    key={costume._id + "Card"}
+                    costume={{ ...costume }}
+                    projId={params.projId}
+                    charId={params.charId}
+                    refreshCostumes={this.getAllCostumes}
+                    history={this.props.history}
+                  />
+                </List.Item>
+              )}
+            />
+          </div>
         );
     }
 }

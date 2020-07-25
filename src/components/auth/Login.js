@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import AuthService from "./auth-service";
-import "./Login.css";
+import "./Login.less";
 import { Modal, Button, Form, Input, Checkbox, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 

@@ -1,7 +1,9 @@
 import React from 'react';
 import TweenOne from 'rc-tween-one';
-import { Menu } from 'antd';
+import { Menu, Breadcrumb } from 'antd';
 import { getChildrenToRender } from './utils';
+
+import { SkinOutlined } from "@ant-design/icons";
 
 const { Item, SubMenu } = Menu;
 
@@ -73,19 +75,21 @@ class Header3 extends React.Component {
     return (
       <TweenOne
         component="header"
-        animation={{ opacity: 0, type: 'from' }}
+        animation={{ opacity: 0, type: "from" }}
         {...dataSource.wrapper}
         {...props}
       >
         <div
           {...dataSource.page}
-          className={`${dataSource.page.className}${phoneOpen ? ' open' : ''}`}
+          className={`${dataSource.page.className}${phoneOpen ? " open" : ""}`}
         >
           <TweenOne
-            animation={{ x: -30, type: 'from', ease: 'easeOutQuad' }}
+            animation={{ x: -30, type: "from", ease: "easeOutQuad" }}
             {...dataSource.logo}
           >
-            <img width="100%" src={dataSource.logo.children} alt="img" />
+            <span style={{fontSize:21}}>
+              <SkinOutlined /> <span > Continuator</span>
+            </span>
           </TweenOne>
           {isMobile && (
             <div
@@ -109,10 +113,10 @@ class Header3 extends React.Component {
                     duration: 300,
                     onComplete: (e) => {
                       if (this.state.phoneOpen) {
-                        e.target.style.height = 'auto';
+                        e.target.style.height = "auto";
                       }
                     },
-                    ease: 'easeInOutQuad',
+                    ease: "easeInOutQuad",
                   }
                 : null
             }
@@ -120,8 +124,8 @@ class Header3 extends React.Component {
             reverse={!!phoneOpen}
           >
             <Menu
-              mode={isMobile ? 'inline' : 'horizontal'}
-              defaultSelectedKeys={['sub0']}
+              mode={isMobile ? "inline" : "horizontal"}
+              defaultSelectedKeys={["sub0"]}
               theme="light"
             >
               {navChildren}

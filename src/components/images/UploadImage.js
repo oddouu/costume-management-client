@@ -4,7 +4,7 @@ import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 
 import instance from "../../instance";
 
-import "./UploadImage.css";
+import "./UploadImage.less";
 
 function getBase64(img, callback) {
   const reader = new FileReader();

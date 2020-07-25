@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-// import "./index.css";
+import "./index.less";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
-// import "antd/dist/antd.css";
+import "antd/dist/antd.css";
 
 import { BrowserRouter as Router } from "react-router-dom";
 

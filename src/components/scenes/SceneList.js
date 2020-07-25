@@ -8,7 +8,7 @@ import React, {
 import NewScene from "./NewScene";
 import instance from "../../instance";
 import { Link } from "react-router-dom";
-import "./SceneList.css";
+import "./SceneList.less";
 
 import {
   Layout,
@@ -412,7 +412,13 @@ class SceneList extends Component {
       };
     });
     return (
-      <div>
+      <div
+        style={{
+          margin: "2rem 5rem 5rem 5rem",
+          padding: "2rem 5rem 5rem 5rem",
+          width: "100%",
+        }}
+      >
         <Button
           onClick={this.handleAdd}
           type="primary"
@@ -433,6 +439,7 @@ class SceneList extends Component {
           dataSource={scenes}
           columns={columns}
           onChange={this.onChange}
+          style={{ textAlign: "center" }}
         />
       </div>
     );
